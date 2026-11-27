@@ -51,7 +51,7 @@
       <div id="gerichtliste"></div>
       <details class="karte daten">
         <summary>Daten sichern</summary>
-        <p class="leise">Alles liegt nur auf diesem Gerät. Mit Export bekommst du eine Datei, die du auf einem anderen Gerät wieder importieren kannst.</p>
+        <p class="leise">Ohne Abgleich liegt alles nur auf diesem Gerät. Mit Export bekommst du eine Datei, die du auf einem anderen Gerät wieder importieren kannst.</p>
         <button class="knopf zweit" id="export">Exportieren</button>
         <label class="knopf zweit">Importieren<input type="file" id="import" accept="application/json" hidden></label>
       </details>
@@ -74,6 +74,8 @@
   </dialog>
 
   <script src="../gemeinsam/familie.js"></script>
+  <script src="../gemeinsam/sync-firebase.js"></script>
+  <script src="../gemeinsam/sync.js"></script>
   <script src="logik.js"></script>
   <script src="essen.js"></script>
 </body>
