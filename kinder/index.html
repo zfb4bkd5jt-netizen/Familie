@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#2f6f62">
+  <title>Schule & Kita</title>
+  <link rel="icon" href="../gemeinsam/logo.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../gemeinsam/icons/apple-touch-icon.png">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <meta name="apple-mobile-web-app-title" content="Familie">
+  <link rel="stylesheet" href="../gemeinsam/style.css">
+  <link rel="stylesheet" href="kinder.css">
+</head>
+<body>
+  <header class="kopf">
+    <a href="../index.html" aria-label="Zur Startseite">‹</a>
+    <h1>Schule & Kita</h1>
+    <a href="#" id="einstellungen-oeffnen" aria-label="Kinder verwalten">⚙︎</a>
+  </header>
+
+  <main class="inhalt">
+    <div id="reiter" class="reiter" role="tablist" aria-label="Kind wählen"></div>
+    <div id="inhalt"></div>
+  </main>
+
+  <dialog id="einstellungen">
+    <h3>Kinder</h3>
+    <div id="kinder-liste"></div>
+    <form id="kind-form">
+      <label for="k-name">Name</label>
+      <input id="k-name" name="name" required placeholder="z. B. Benno" list="personen-namen">
+      <datalist id="personen-namen"></datalist>
+      <div class="zwei">
+        <div>
+          <label for="k-ort">Wo?</label>
+          <select id="k-ort" name="ort"><option>Schule</option><option>Kita</option></select>
+        </div>
+        <div>
+          <label for="k-app">Infos kommen über</label>
+          <input id="k-app" name="app" placeholder="z. B. DieSchulApp">
+        </div>
+      </div>
+      <div class="aktionen"><span class="luecke"></span><button class="knopf klein">Hinzufügen</button></div>
+    </form>
+    <div class="aktionen"><span class="luecke"></span><button class="knopf" id="einstellungen-schliessen">Fertig</button></div>
+  </dialog>
+
+  <div id="hinweis" class="hinweis" role="status" hidden></div>
+
+  <script src="../gemeinsam/familie.js"></script>
+  <script src="../gemeinsam/sync-firebase.js"></script>
+  <script src="../gemeinsam/sync.js"></script>
+  <script src="../aufgaben/aufgaben-daten.js"></script>
+  <script src="logik.js"></script>
+  <script src="kinder.js"></script>
+</body>
+</html>
