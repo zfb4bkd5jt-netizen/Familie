@@ -471,6 +471,12 @@
     if (!m) return false;
     let text = m[1];
     try { text = decodeURIComponent(text.replace(/\+/g, ' ')); } catch { /* Text so nehmen */ }
+    if (/codierte url|gefragte eingabe/i.test(text)) {
+      history.replaceState(null, '', location.pathname + location.search);
+      hinweis('Der Kurzbefehl schickt den Platzhalter statt deiner Worte. Bitte Schritt 3 der Siri-Anleitung prüfen.');
+      zeigeAktuell();
+      return true;
+    }
     const namen = textEintragen(text, 'link-' + Date.now().toString(36));
     speichern();
     history.replaceState(null, '', location.pathname + location.search);
