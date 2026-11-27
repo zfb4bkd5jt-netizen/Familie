@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#2f6f62">
+  <title>Aufgaben & Routinen</title>
+  <link rel="stylesheet" href="../gemeinsam/style.css">
+  <link rel="stylesheet" href="aufgaben.css">
+</head>
+<body>
+  <header class="kopf">
+    <a href="../index.html" aria-label="Zur Startseite">‹</a>
+    <h1>Aufgaben & Routinen</h1>
+    <a href="#" id="einstellungen-oeffnen" aria-label="Einstellungen">⚙︎</a>
+  </header>
+
+  <main class="inhalt">
+    <div id="filter" class="filter" role="group" aria-label="Nach Person filtern"></div>
+    <div id="liste"></div>
+  </main>
+
+  <button class="knopf plus" id="neu" aria-label="Neue Aufgabe">＋</button>
+
+  <!-- Bearbeiten -->
+  <dialog id="formular-dialog">
+    <form id="formular" method="dialog">
+      <h3 id="formular-titel">Neue Aufgabe</h3>
+      <div id="vorlagen" class="vorlagen"></div>
+      <input type="hidden" name="id">
+      <label for="f-titel">Was?</label>
+      <input id="f-titel" name="titel" required placeholder="z. B. Restmüll rausstellen">
+      <div class="zwei">
+        <div>
+          <label for="f-kategorie">Art</label>
+          <select id="f-kategorie" name="kategorie"></select>
+        </div>
+        <div>
+          <label for="f-person">Wer kümmert sich?</label>
+          <select id="f-person" name="personId"></select>
+        </div>
+      </div>
+      <label for="f-start">Wann (erstes Mal)?</label>
+      <input id="f-start" name="start" type="date" required>
+      <label>Wie oft?</label>
+      <div class="zwei">
+        <select name="art" aria-label="Wiederholung">
+          <option value="keine">einmalig</option>
+          <option value="taeglich">täglich</option>
+          <option value="woechentlich">wöchentlich</option>
+          <option value="monatlich">monatlich</option>
+          <option value="jaehrlich">jährlich</option>
+        </select>
+        <label class="inline">alle <input name="intervall" type="number" min="1" max="99" value="1" aria-label="Intervall"> <span id="einheit"></span></label>
+      </div>
+      <label for="f-erinnerung">Erinnern, Tage vorher</label>
+      <input id="f-erinnerung" name="erinnerungTage" type="number" min="0" max="60" value="1">
+      <label for="f-notiz">Notiz</label>
+      <textarea id="f-notiz" name="notiz" rows="2" placeholder="z. B. Telefonnummer, Unterlagen mitnehmen"></textarea>
+      <div class="aktionen">
+        <button type="button" class="knopf zweit" id="loeschen" hidden>Löschen</button>
+        <span class="luecke"></span>
+        <button type="button" class="knopf zweit" id="abbrechen">Abbrechen</button>
+        <button type="submit" class="knopf">Speichern</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Einstellungen -->
+  <dialog id="einstellungen">
+    <h3>Familie</h3>
+    <div id="personen-liste"></div>
+    <form id="person-form" class="zeile">
+      <input name="name" placeholder="Name, z. B. Matthias" required aria-label="Name">
+      <button class="knopf klein">Hinzufügen</button>
+    </form>
+
+    <h3>Erinnerungen</h3>
+    <p class="leise">Die App erinnert dich beim Öffnen. Für Erinnerungen, die auch kommen, wenn die App zu ist, lade die Termine in deinen Handy-Kalender.</p>
+    <button class="knopf zweit" id="ics-export">📅 Alle in den Kalender (.ics)</button>
+    <button class="knopf zweit" id="benachrichtigung">🔔 Hinweise beim Öffnen erlauben</button>
+
+    <h3>Sicherung</h3>
+    <p class="leise">Die Daten liegen nur auf diesem Gerät im Browser. Sichere sie ab und zu oder übertrage sie so auf ein anderes Gerät.</p>
+    <button class="knopf zweit" id="export">⬇︎ Sicherung herunterladen</button>
+    <label class="knopf zweit datei">⬆︎ Sicherung einspielen<input type="file" id="import" accept="application/json,.json" hidden></label>
+
+    <div class="aktionen">
+      <span class="luecke"></span>
+      <button class="knopf" id="einstellungen-schliessen">Fertig</button>
+    </div>
+  </dialog>
+
+  <div id="hinweis" class="hinweis" role="status" hidden></div>
+
+  <script src="../gemeinsam/familie.js"></script>
+  <script src="aufgaben-daten.js"></script>
+  <script src="aufgaben.js"></script>
+</body>
+</html>
