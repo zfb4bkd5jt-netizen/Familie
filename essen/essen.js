@@ -3,7 +3,10 @@
   'use strict';
   const L = window.EssenLogik;
   const SPEICHER = 'familie.essen.v1';
+  // Unter der Woche essen die Kinder mittags in Schule/Kita, gemeinsam gekocht wird abends.
+  // Mittag gibt es deshalb nur am Wochenende.
   const MAHLZEITEN = [['mittag', 'Mittag'], ['abend', 'Abend']];
+  const mahlzeitenAm = d => (d.getDay() === 0 || d.getDay() === 6) ? MAHLZEITEN : MAHLZEITEN.filter(([k]) => k === 'abend');
   const TAGNAMEN = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
 
   const $ = sel => document.querySelector(sel);
@@ -67,7 +70,7 @@
       const eintrag = daten.plan[iso] || {};
       return el('div', { class: 'karte tag' + (iso === heuteIso ? ' heute' : '') },
         el('div', { class: 'tagname' }, el('strong', { text: TAGNAMEN[i] }), el('span', { class: 'leise', text: fmt(d) })),
-        el('div', { class: 'mahlzeiten' }, MAHLZEITEN.map(([key, label]) =>
+        el('div', { class: 'mahlzeiten' }, mahlzeitenAm(d).map(([key, label]) =>
           el('label', { class: 'mahlzeit' }, el('span', { class: 'leise', text: label }),
             el('select', {
               'aria-label': `${TAGNAMEN[i]} ${label}`,
@@ -88,12 +91,12 @@
   }
 
   function plaetzeDerWoche() {
-    return tage().flatMap(d => MAHLZEITEN.map(([key]) => [L.isoDatum(d), key]));
+    return tage().flatMap(d => mahlzeitenAm(d).map(([key]) => [L.isoDatum(d), key]));
   }
 
   $('#vorschlag').addEventListener('click', () => {
     const alle = plaetzeDerWoche();
-    // Vorschläge nur fürs Abendessen; Mittag bleibt, wie es ist (Schule/Kita/Arbeit).
+    // Vorschläge nur fürs Abendessen; Mittag am Wochenende wählt ihr selbst.
     const leer = alle.filter(([iso, key]) => key === 'abend' && !(daten.plan[iso] || {})[key]);
     const belegt = alle.map(([iso, key]) => (daten.plan[iso] || {})[key]);
     const vorschlag = L.vorschlagen(leer.map(p => p.join('|')), belegt, daten.gerichte);
