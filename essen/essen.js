@@ -7,7 +7,11 @@
   // Mittag gibt es deshalb nur am Wochenende.
   const MAHLZEITEN = [['mittag', 'Mittag'], ['abend', 'Abend']];
   const mahlzeitenAm = d => (d.getDay() === 0 || d.getDay() === 6) ? MAHLZEITEN : MAHLZEITEN.filter(([k]) => k === 'abend');
-  const TAGNAMEN = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+  const TAGNAMEN = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+  // Wocheneinkauf ist freitags (Maike, vormittags). Eine Woche läuft deshalb Fr bis Do.
+  const WOCHENBEGINN = 5;
+  const LISTEN = [['lidl', 'LIDL'], ['dm', 'DM'], ['heimweg', 'Heimweg'], ['ikea', 'IKEA'], ['baumarkt', 'Baumarkt'], ['apotheke', 'Apotheke']];
+  const STANDARDLISTE = 'lidl';
 
   const $ = sel => document.querySelector(sel);
   const el = (tag, attrs = {}, ...kinder) => {
@@ -78,17 +82,42 @@
   });
 
   // ---------- Zustand ----------
-  let start = L.wochenStart(new Date());
-  // Am Wochenende zeigt die App gleich die nächste Woche, dann wird meist geplant und eingekauft.
-  const heute = new Date();
-  if (heute.getDay() === 6 || heute.getDay() === 0) start.setDate(start.getDate() + 7);
+  const wocheVon = d => L.wochenStart(d, WOCHENBEGINN);
+  let start = wocheVon(new Date());
+  // Am letzten Tag der Woche (Do) wird meist schon die nächste geplant.
+  if (new Date().getDay() === (WOCHENBEGINN + 6) % 7) start.setDate(start.getDate() + 7);
   let erledigteAusblenden = false;
+  let aktuelleListe = STANDARDLISTE;
 
-  const woche = () => L.isoWoche(start);
+  const woche = () => L.isoDatum(start);
   const tage = () => L.wochenTage(start);
   const fmt = d => d.toLocaleDateString('de-DE', { day: 'numeric', month: 'numeric' });
-  const wochenTitel = () => { const t = tage(); return `KW ${woche().slice(-2)} · ${fmt(t[0])} – ${fmt(t[6])}`; };
+  const fmtTag = d => TAGNAMEN[d.getDay()] + ' ' + fmt(d);
+  const wochenTitel = () => { const t = tage(); return `${fmtTag(t[0])} – ${fmtTag(t[6])}`; };
   const gericht = id => daten.gerichte.find(g => g.id === id);
+
+  // Einkaufslisten aus der Zeit vor den Fr-Do-Wochen ("2026-W48") auf den Freitag ihrer Woche legen.
+  function einkaufUmstellen() {
+    let geaendert = false;
+    daten.zuordnung = daten.zuordnung || {};
+    for (const [k, alt] of Object.entries(daten.einkauf || {})) {
+      const m = /^(\d{4})-W(\d\d)$/.exec(k);
+      if (!m) continue;
+      const montag = L.wochenStart(new Date(+m[1], 0, 4));
+      montag.setDate(montag.getDate() + (m[2] - 1) * 7 + 4);
+      const neu = L.isoDatum(montag);
+      const ziel = daten.einkauf[neu] || (daten.einkauf[neu] = { abgehakt: {}, extra: [] });
+      Object.assign(ziel.abgehakt, alt.abgehakt || {});
+      ziel.extra = (ziel.extra || []).concat(alt.extra || []);
+      delete daten.einkauf[k];
+      geaendert = true;
+    }
+    // Übertrag offener Artikel erst ab der Woche, in der es ihn gibt, damit nicht alte,
+    // nie abgehakte Wochen auf einmal auftauchen.
+    if (!daten.uebertragAb) { daten.uebertragAb = L.isoDatum(wocheVon(new Date())); geaendert = true; }
+    if (geaendert) speichern();
+  }
+  einkaufUmstellen();
 
   // ---------- Woche ----------
   function zeigeWoche() {
@@ -99,11 +128,11 @@
       const iso = L.isoDatum(d);
       const eintrag = daten.plan[iso] || {};
       return el('div', { class: 'karte tag' + (iso === heuteIso ? ' heute' : '') },
-        el('div', { class: 'tagname' }, el('strong', { text: TAGNAMEN[i] }), el('span', { class: 'leise', text: fmt(d) })),
+        el('div', { class: 'tagname' }, el('strong', { text: TAGNAMEN[d.getDay()] }), el('span', { class: 'leise', text: fmt(d) })),
         el('div', { class: 'mahlzeiten' }, mahlzeitenAm(d).map(([key, label]) =>
           el('label', { class: 'mahlzeit' }, el('span', { class: 'leise', text: label }),
             el('select', {
-              'aria-label': `${TAGNAMEN[i]} ${label}`,
+              'aria-label': `${TAGNAMEN[d.getDay()]} ${label}`,
               onchange: e => setzePlan(iso, key, e.target.value)
             },
               el('option', { value: '', text: '–' }),
@@ -144,63 +173,125 @@
   $('#woche-vor').addEventListener('click', () => { start.setDate(start.getDate() + 7); zeigeAktuell(); });
 
   // ---------- Einkauf ----------
-  function einkaufWoche() {
-    const e = daten.einkauf[woche()] || (daten.einkauf[woche()] = { abgehakt: {}, extra: [] });
+  function einkaufWoche(k = woche()) {
+    const e = daten.einkauf[k] || (daten.einkauf[k] = { abgehakt: {}, extra: [] });
     e.abgehakt = e.abgehakt || {}; e.extra = e.extra || [];
     return e;
   }
 
-  function postenDerWoche() {
-    const ids = plaetzeDerWoche().map(([iso, key]) => (daten.plan[iso] || {})[key]).filter(Boolean);
-    const liste = L.einkaufslisteBilden(ids, daten.gerichte);
-    const extra = einkaufWoche().extra.map(x => ({ ...x, gerichte: [], extra: true }));
-    return [...liste, ...extra].sort((a, b) =>
-      L.KATEGORIEN.indexOf(a.kategorie) - L.KATEGORIEN.indexOf(b.kategorie) || a.name.localeCompare(b.name, 'de'));
+  // Alles, was in Woche k neu dazukommt: Zutaten aus dem Plan und selbst eingetragene Artikel.
+  function eigenePosten(k) {
+    const s0 = new Date(k + 'T00:00');
+    const ids = L.wochenTage(s0).flatMap(d => mahlzeitenAm(d).map(([key]) => (daten.plan[L.isoDatum(d)] || {})[key])).filter(Boolean);
+    const extra = ((daten.einkauf[k] || {}).extra || []).map(x => ({ ...x, gerichte: [], extra: true }));
+    return [...L.einkaufslisteBilden(ids, daten.gerichte), ...extra];
   }
 
+  function wochenBis(k) {
+    const ab = daten.uebertragAb;
+    if (!ab || k <= ab) return [k];
+    const d = new Date(ab + 'T00:00'), liste = [];
+    while (L.isoDatum(d) < k) { liste.push(L.isoDatum(d)); d.setDate(d.getDate() + 7); }
+    return [...liste, k];
+  }
+
+  const listeVon = p => (p.extra && p.liste) || daten.zuordnung[L.namensSchluessel(p.name)] || STANDARDLISTE;
+
+  function postenDerWoche() {
+    return L.einkaufMitUebertrag(wochenBis(woche()), eigenePosten, k => (daten.einkauf[k] || {}).abgehakt)
+      .map(p => ({ ...p, liste: listeVon(p) }));
+  }
+
+  const sortieren = liste => liste.sort((a, b) =>
+    L.KATEGORIEN.indexOf(a.kategorie) - L.KATEGORIEN.indexOf(b.kategorie) || a.name.localeCompare(b.name, 'de'));
+
   function zeigeEinkauf() {
-    $('#einkauf-titel').textContent = wochenTitel();
+    const t = tage();
+    $('#einkauf-titel').replaceChildren(el('div', { text: 'Einkauf ' + fmtTag(t[0]) }),
+      el('small', { class: 'leise', text: `für ${fmtTag(t[0])} – ${fmtTag(t[6])}` }));
     const ew = einkaufWoche();
-    const posten = postenDerWoche();
+    const alle = postenDerWoche();
+    const offenIn = id => alle.filter(p => p.liste === id && !ew.abgehakt[p.pid]).length;
+    $('#listen').replaceChildren(...LISTEN.map(([id, name]) => {
+      const n = offenIn(id);
+      return el('button', { class: 'liste-chip', 'aria-pressed': String(id === aktuelleListe), onclick: () => { aktuelleListe = id; zeigeEinkauf(); } },
+        name, n ? el('span', { class: 'anzahl', text: String(n) }) : null);
+    }));
+    $('#extra-eingabe').placeholder = aktuelleListe === STANDARDLISTE ? 'Noch etwas, z. B. 1 Pck Kaffee' : `Auf ${listenName(aktuelleListe)}, z. B. Zahnpasta`;
+    const posten = sortieren(alle.filter(p => p.liste === aktuelleListe));
     if (!posten.length) {
-      $('#einkaufsliste').replaceChildren(el('p', { class: 'karte leise', text: 'Noch nichts geplant. Wähle im Reiter „Woche“ Gerichte aus, dann erscheint hier automatisch die Einkaufsliste.' }));
+      $('#einkaufsliste').replaceChildren(el('p', { class: 'karte leise', text: aktuelleListe === STANDARDLISTE
+        ? 'Noch nichts geplant. Wähle im Reiter „Woche“ Gerichte aus, dann erscheint hier automatisch die Einkaufsliste.'
+        : `Auf ${listenName(aktuelleListe)} steht nichts. Trag oben etwas ein oder verschiebe einen Artikel mit ⇄ hierher.` }));
       return;
     }
     const gruppen = new Map();
     for (const p of posten) {
-      if (erledigteAusblenden && ew.abgehakt[p.schluessel]) continue;
+      if (erledigteAusblenden && ew.abgehakt[p.pid]) continue;
       if (!gruppen.has(p.kategorie)) gruppen.set(p.kategorie, []);
       gruppen.get(p.kategorie).push(p);
     }
-    const offen = posten.filter(p => !ew.abgehakt[p.schluessel]).length;
+    const offen = posten.filter(p => !ew.abgehakt[p.pid]).length;
     $('#einkaufsliste').replaceChildren(
       el('p', { class: 'leise zaehler', text: `${offen} von ${posten.length} offen` }),
       ...[...gruppen].map(([kat, liste]) => el('div', { class: 'karte gruppe' },
         el('h3', { text: kat }),
-        liste.map(p => el('label', { class: 'posten' + (ew.abgehakt[p.schluessel] ? ' erledigt' : '') },
-          el('input', { type: 'checkbox', checked: !!ew.abgehakt[p.schluessel], onchange: e => {
-            if (e.target.checked) ew.abgehakt[p.schluessel] = true; else delete ew.abgehakt[p.schluessel];
-            speichern(); zeigeEinkauf();
-          } }),
-          el('span', { class: 'postentext' },
-            el('span', { text: L.zutatSchreiben(p) }),
-            p.gerichte.length ? el('small', { class: 'leise', text: p.gerichte.join(', ') }) : null),
-          p.extra ? el('button', { class: 'entfernen', 'aria-label': 'Entfernen', text: '×', onclick: e => {
-            e.preventDefault();
-            ew.extra = ew.extra.filter(x => x.schluessel !== p.schluessel);
-            delete ew.abgehakt[p.schluessel]; speichern(); zeigeEinkauf();
-          } }) : null
-        ))
+        liste.map(p => {
+          const herkunft = p.herkunft !== woche() ? 'noch offen vom Einkauf ' + fmtTag(new Date(p.herkunft + 'T00:00')) : '';
+          const info = [herkunft, p.gerichte.join(', ')].filter(Boolean).join(' · ');
+          return el('label', { class: 'posten' + (ew.abgehakt[p.pid] ? ' erledigt' : '') + (herkunft ? ' uebertrag' : '') },
+            el('input', { type: 'checkbox', checked: !!ew.abgehakt[p.pid], onchange: e => {
+              if (e.target.checked) ew.abgehakt[p.pid] = true; else delete ew.abgehakt[p.pid];
+              speichern(); zeigeEinkauf();
+            } }),
+            el('span', { class: 'postentext' },
+              el('span', { text: L.zutatSchreiben(p) }),
+              info ? el('small', { class: 'leise', text: info }) : null),
+            el('button', { class: 'verschieben', 'aria-label': 'Auf andere Liste verschieben', text: '⇄', onclick: e => { e.preventDefault(); verschiebenFragen(p); } }),
+            p.extra && !herkunft ? el('button', { class: 'entfernen', 'aria-label': 'Entfernen', text: '×', onclick: e => {
+              e.preventDefault();
+              ew.extra = ew.extra.filter(x => x.schluessel !== p.schluessel);
+              delete ew.abgehakt[p.pid]; speichern(); zeigeEinkauf();
+            } }) : null
+          );
+        })
       ))
     );
   }
+
+  const listenName = id => (LISTEN.find(([i]) => i === id) || [, id])[1];
+
+  // Verschieben merkt sich die Liste pro Zutat: beim nächsten Mal landet sie gleich dort.
+  let zuVerschieben = null;
+  function verschiebenFragen(p) {
+    zuVerschieben = p;
+    $('#liste-dialog-titel').textContent = `„${p.name}“ verschieben nach`;
+    $('#liste-auswahl').replaceChildren(...LISTEN.map(([id, name]) => el('button', {
+      class: 'knopf' + (id === p.liste ? '' : ' zweit'), value: id, text: name
+    })));
+    $('#liste-dialog').returnValue = '';
+    $('#liste-dialog').showModal();
+  }
+  $('#liste-dialog').addEventListener('close', () => {
+    const ziel = $('#liste-dialog').returnValue, p = zuVerschieben;
+    zuVerschieben = null;
+    if (!p || !LISTEN.some(([id]) => id === ziel) || ziel === p.liste) return;
+    if (ziel === STANDARDLISTE) delete daten.zuordnung[L.namensSchluessel(p.name)];
+    else daten.zuordnung[L.namensSchluessel(p.name)] = ziel;
+    if (p.extra) {
+      const x = einkaufWoche(p.herkunft).extra.find(x => x.id === p.id);
+      if (x) x.liste = ziel;
+    }
+    speichern(); zeigeEinkauf();
+    hinweis(`Auf ${listenName(ziel)} verschoben`);
+  });
 
   $('#extra-form').addEventListener('submit', e => {
     e.preventDefault();
     const z = L.zutatLesen($('#extra-eingabe').value);
     if (!z) return;
     const id = neueId();
-    einkaufWoche().extra.push({ id, ...z, schluessel: 'extra|' + id });
+    einkaufWoche().extra.push({ id, ...z, schluessel: 'extra|' + id, liste: aktuelleListe });
     $('#extra-eingabe').value = '';
     speichern(); zeigeEinkauf();
   });
@@ -211,12 +302,15 @@
     zeigeEinkauf();
   });
 
+  $('#einkauf-zurueck').addEventListener('click', () => { start.setDate(start.getDate() - 7); zeigeAktuell(); });
+  $('#einkauf-vor').addEventListener('click', () => { start.setDate(start.getDate() + 7); zeigeAktuell(); });
+
   $('#teilen').addEventListener('click', async () => {
     const ew = einkaufWoche();
-    const offen = postenDerWoche().filter(p => !ew.abgehakt[p.schluessel]);
-    const text = L.listeAlsText('Einkauf ' + wochenTitel(), offen);
+    const offen = sortieren(postenDerWoche().filter(p => p.liste === aktuelleListe && !ew.abgehakt[p.pid]));
+    const text = L.listeAlsText(`${listenName(aktuelleListe)} · Einkauf ${fmtTag(tage()[0])}`, offen);
     try {
-      if (navigator.share) await navigator.share({ title: 'Einkaufsliste', text });
+      if (navigator.share) await navigator.share({ title: 'Einkaufsliste ' + listenName(aktuelleListe), text });
       else { await navigator.clipboard.writeText(text); hinweis('Liste kopiert'); }
     } catch (err) { if (err.name !== 'AbortError') hinweis('Teilen hat nicht geklappt'); }
   });
@@ -302,7 +396,7 @@
       if (!Array.isArray(neu.gerichte) || typeof neu.plan !== 'object') throw new Error('Format');
       if (!confirm('Import ersetzt Gerichte, Plan und Einkaufslisten auf diesem Gerät. Weiter?')) return;
       daten = { version: 1, einkauf: {}, ...neu };
-      beispieleEntfernen(); speichern(); zeigeAktuell(); hinweis('Import fertig');
+      beispieleEntfernen(); einkaufUmstellen(); speichern(); zeigeAktuell(); hinweis('Import fertig');
     } catch { hinweis('Die Datei ist kein gültiger Essensplan-Export'); }
     e.target.value = '';
   });

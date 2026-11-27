@@ -34,7 +34,12 @@
     </section>
 
     <section id="ansicht-einkauf" hidden>
-      <div class="wochenwahl"><div id="einkauf-titel"></div></div>
+      <div class="wochenwahl">
+        <button class="knopf zweit" id="einkauf-zurueck" aria-label="Vorige Woche">‹</button>
+        <div id="einkauf-titel"></div>
+        <button class="knopf zweit" id="einkauf-vor" aria-label="Nächste Woche">›</button>
+      </div>
+      <div id="listen" class="listen" role="group" aria-label="Einkaufslisten"></div>
       <form id="extra-form" class="extra">
         <input id="extra-eingabe" placeholder="Noch etwas, z. B. 1 Pck Kaffee" autocomplete="off">
         <button class="knopf">+</button>
@@ -76,6 +81,15 @@
         <button class="knopf zweit" value="abbrechen" formnovalidate>Abbrechen</button>
         <button class="knopf zweit gefahr" value="loeschen" id="gericht-loeschen" formnovalidate>Löschen</button>
       </div>
+    </form>
+  </dialog>
+
+  <dialog id="liste-dialog">
+    <form method="dialog">
+      <h2 id="liste-dialog-titel">Verschieben nach</h2>
+      <div id="liste-auswahl" class="liste-auswahl"></div>
+      <p class="leise">Die App merkt sich das. Beim nächsten Mal landet der Artikel gleich auf dieser Liste.</p>
+      <div class="aktionen"><button class="knopf zweit" value="">Abbrechen</button></div>
     </form>
   </dialog>
 

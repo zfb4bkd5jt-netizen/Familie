@@ -93,3 +93,23 @@ test('Alle Familienrezepte sind lesbar und haben eindeutige ids', () => {
     for (const z of r.zutaten) assert.ok(L.zutatLesen(z).name, `${r.id}: ${z}`);
   }
 });
+
+test('Woche beginnt am Freitag', () => {
+  const s = L.wochenStart(new Date(2026, 11, 3), 5); // Do 3.12.
+  assert.equal(L.isoDatum(s), '2026-11-27');
+  assert.equal(L.isoDatum(L.wochenStart(new Date(2026, 10, 27), 5)), '2026-11-27');
+  assert.equal(L.isoDatum(L.wochenStart(new Date(2026, 10, 26), 5)), '2026-11-20');
+});
+
+test('Offene Artikel wandern in die nächste Woche', () => {
+  const eigene = { a: [{ schluessel: 'milch|l' }, { schluessel: 'brot|' }], b: [{ schluessel: 'milch|l' }], c: [] };
+  const hak = { a: { 'brot|': true }, b: { 'milch|l': true }, c: {} };
+  const b = L.einkaufMitUebertrag(['a', 'b'], k => eigene[k], k => hak[k]);
+  assert.deepEqual(b.map(p => p.pid), ['a>milch|l', 'milch|l']);
+  // In c ist nur noch die Milch aus a offen, die aus b wurde abgehakt.
+  const c = L.einkaufMitUebertrag(['a', 'b', 'c'], k => eigene[k], k => hak[k]);
+  assert.deepEqual(c.map(p => [p.pid, p.herkunft]), [['a>milch|l', 'a']]);
+  // Abgehakt in b: dann ist sie in c weg.
+  hak.b['a>milch|l'] = true;
+  assert.equal(L.einkaufMitUebertrag(['a', 'b', 'c'], k => eigene[k], k => hak[k]).length, 0);
+});

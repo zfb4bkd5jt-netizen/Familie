@@ -78,10 +78,10 @@
     return `${d.getFullYear()}-${z(d.getMonth() + 1)}-${z(d.getDate())}`;
   }
 
-  function wochenStart(datum) {
+  // beginn: Wochentag, an dem die Woche anfängt (0 = So, 1 = Mo, 5 = Fr).
+  function wochenStart(datum, beginn = 1) {
     const d = new Date(datum.getFullYear(), datum.getMonth(), datum.getDate());
-    const tag = (d.getDay() + 6) % 7; // Mo=0
-    d.setDate(d.getDate() - tag);
+    d.setDate(d.getDate() - ((d.getDay() - beginn + 7) % 7));
     return d;
   }
 
@@ -101,9 +101,28 @@
 
   // --- Einkaufsliste ---
   // "Möhre" und "Möhren" sollen zusammengezählt werden: ein End-n wird für den Vergleich ignoriert.
-  function schluessel(z) {
-    const n = normalisiere(z.name);
-    return (n.length > 4 && n.endsWith('n') ? n.slice(0, -1) : n) + '|' + (z.einheit || '');
+  function namensSchluessel(name) {
+    const n = normalisiere(name);
+    return n.length > 4 && n.endsWith('n') ? n.slice(0, -1) : n;
+  }
+  function schluessel(z) { return namensSchluessel(z.name) + '|' + (z.einheit || ''); }
+
+  // Einkauf über mehrere Wochen: Was in einer Woche nicht abgehakt wurde, wandert in die nächste.
+  // wochen: Wochen-Schlüssel in Reihenfolge, die letzte ist die angezeigte.
+  // eigene(k): Posten der Woche k (mit schluessel), abgehakt(k): {pid: true}.
+  // Jeder Posten bekommt herkunft (Woche, aus der er stammt) und pid (Schlüssel fürs Abhaken):
+  // in der eigenen Woche der schluessel, übertragen "herkunft>schluessel".
+  function einkaufMitUebertrag(wochen, eigene, abgehakt) {
+    let mitgenommen = [];
+    let alle = [];
+    wochen.forEach((k, i) => {
+      alle = [...mitgenommen, ...eigene(k).map(p => ({ ...p, herkunft: k, pid: p.schluessel }))];
+      if (i === wochen.length - 1) return;
+      const hak = abgehakt(k) || {};
+      mitgenommen = alle.filter(p => !hak[p.pid])
+        .map(p => ({ ...p, pid: p.herkunft === k ? k + '>' + p.schluessel : p.pid }));
+    });
+    return alle;
   }
 
   // kg/l werden zum Zusammenzählen in g/ml umgerechnet und danach wieder lesbar gemacht.
@@ -173,7 +192,7 @@
     return ergebnis;
   }
 
-  const api = { KATEGORIEN, istGrundvorrat, kategorieRaten, zutatLesen, zutatSchreiben, isoDatum, wochenStart, wochenTage, isoWoche, einkaufslisteBilden, listeAlsText, vorschlagen, normalisiere };
+  const api = { KATEGORIEN, istGrundvorrat, kategorieRaten, zutatLesen, zutatSchreiben, isoDatum, wochenStart, wochenTage, isoWoche, einkaufslisteBilden, einkaufMitUebertrag, namensSchluessel, listeAlsText, vorschlagen, normalisiere };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   global.EssenLogik = api;
 })(typeof window !== 'undefined' ? window : globalThis);
