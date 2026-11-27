@@ -27,6 +27,7 @@ Erinnerungen: Die App zeigt beim Öffnen, was überfällig, heute oder bald fäl
 ## Aufbau (für neue Module)
 
 - `index.html`: Startseite, verlinkt die Module.
+- `gemeinsam/logo.svg`: Team-Bieler-Logo (nach Maikes T-Shirt-Design). App-Icons in `gemeinsam/icons/`, `manifest.webmanifest` für „Zum Home-Bildschirm“.
 - `gemeinsam/familie.js`: globales `Familie`-Objekt: `laden(key, fallback)`, `speichern(key, wert)`, `personen()`, `person(id)`, `personHinzufuegen(name)`, `isoDatum(date)`, `ausIso(iso)`, `heute()`, `exportieren()`, `importieren(obj)`.
 - `gemeinsam/style.css`: Basis-Styles. Variablen `--hg --karte --text --text-leise --akzent --akzent-text --rand --gefahr --ok --radius`, Klassen `.kopf .inhalt .karte .knopf .knopf.zweit .chip`.
 - Jedes Modul in einem eigenen Ordner mit `index.html`. Klassische Scripts, keine ES-Module, damit es auch per Doppelklick (`file://`) läuft.
