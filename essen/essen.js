@@ -51,13 +51,30 @@
   }
   function speichern() { Familie.speichern(SPEICHER, daten); }
 
+  // Familienrezepte aus rezepte.js einmalig übernehmen. Was ihr danach bearbeitet oder
+  // löscht, bleibt so: jedes Rezept wird pro Familie nur ein Mal hinzugefügt.
+  function rezepteUebernehmen() {
+    const sammlung = window.FAMILIEN_REZEPTE || [];
+    daten.importiert = daten.importiert || [];
+    let neu = 0;
+    for (const r of sammlung) {
+      if (daten.importiert.includes(r.id)) continue;
+      daten.importiert.push(r.id);
+      if (daten.gerichte.some(g => g.id === r.id)) continue;
+      daten.gerichte.push({ ...r, zutaten: mitIds(r.zutaten.map(L.zutatLesen)) });
+      neu++;
+    }
+    if (neu || sammlung.length) speichern();
+  }
+  rezepteUebernehmen();
+
   // Neue Daten von einem anderen Gerät: übernehmen und neu zeichnen.
   window.addEventListener('familie:aktualisiert', e => {
     if (e.detail && e.detail.key !== SPEICHER) return;
     const neu = Familie.laden(SPEICHER, null);
     if (!neu || !Array.isArray(neu.gerichte)) return;
     daten = neu;
-    if (!$('#gericht-dialog').open) zeigeAktuell();
+    if (!$('#gericht-dialog').open && !$('#rezept-dialog').open) zeigeAktuell();
   });
 
   // ---------- Zustand ----------
@@ -207,10 +224,28 @@
   // ---------- Gerichte ----------
   function zeigeGerichte() {
     const sortiert = daten.gerichte.slice().sort((a, b) => a.name.localeCompare(b.name, 'de'));
-    $('#gerichtliste').replaceChildren(...sortiert.map(g => el('button', { class: 'karte gericht', onclick: () => bearbeiten(g) },
-      el('strong', { text: g.name + (g.schnell ? ' ⚡' : '') }),
+    $('#gerichtliste').replaceChildren(...sortiert.map(g => el('button', { class: 'karte gericht', onclick: () => zeigeRezept(g) },
+      el('strong', { text: g.name + (g.schnell ? ' ⚡' : '') + (g.zubereitung ? ' 📖' : '') }),
       el('small', { class: 'leise', text: g.zutaten.map(z => z.name).join(', ') || 'Keine Zutaten' }))));
   }
+
+  // Rezept zum Lesen beim Kochen
+  let imRezept = null;
+  function zeigeRezept(g) {
+    imRezept = g;
+    const absaetze = (g.zubereitung || '').split(/\n+/).map(t => t.trim()).filter(Boolean);
+    $('#rezept-inhalt').replaceChildren(
+      el('h2', { text: g.name }),
+      el('p', { class: 'leise', text: [g.portionen ? g.portionen + ' Portionen' : '', g.quelle ? 'von ' + g.quelle : ''].filter(Boolean).join(' · ') || null }),
+      el('h3', { text: 'Zutaten' }),
+      el('ul', { class: 'zutatenliste' }, g.zutaten.map(z => el('li', { text: L.zutatSchreiben(z) }))),
+      absaetze.length ? el('h3', { text: 'Zubereitung' }) : null,
+      absaetze.length ? el('ol', { class: 'schritte' }, absaetze.map(t => el('li', { text: t.replace(/^\d+[.)]\s*/, '') }))) : null
+    );
+    $('#rezept-dialog').showModal();
+  }
+  $('#rezept-bearbeiten').addEventListener('click', () => { $('#rezept-dialog').close(); bearbeiten(imRezept); });
+  $('#rezept-schliessen').addEventListener('click', () => $('#rezept-dialog').close());
 
   let inBearbeitung = null;
   function bearbeiten(g) {
@@ -220,6 +255,9 @@
     f.name.value = g ? g.name : '';
     f.zutaten.value = g ? g.zutaten.map(L.zutatSchreiben).join('\n') : '';
     f.schnell.checked = !!(g && g.schnell);
+    f.portionen.value = g && g.portionen ? g.portionen : '';
+    f.quelle.value = g && g.quelle ? g.quelle : '';
+    f.zubereitung.value = g && g.zubereitung ? g.zubereitung : '';
     $('#gericht-loeschen').hidden = !g;
     $('#gericht-dialog').showModal();
   }
@@ -234,7 +272,10 @@
         id: inBearbeitung ? inBearbeitung.id : neueId(),
         name: f.name.value.trim(),
         schnell: f.schnell.checked,
-        zutaten: mitIds(f.zutaten.value.split('\n').map(L.zutatLesen))
+        zutaten: mitIds(f.zutaten.value.split('\n').map(L.zutatLesen)),
+        portionen: Number(f.portionen.value) || null,
+        quelle: f.quelle.value.trim(),
+        zubereitung: f.zubereitung.value.trim()
       };
       daten.gerichte = daten.gerichte.filter(g => g.id !== neu.id).concat(neu);
     } else if (wert === 'loeschen' && inBearbeitung) {

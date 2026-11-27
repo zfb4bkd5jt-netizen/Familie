@@ -48,3 +48,11 @@ dialog label.zeile { display: flex; align-items: center; gap: 8px; }
 dialog label.zeile input { width: auto; }
 
 .hinweis { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--text); color: var(--karte); padding: 10px 16px; border-radius: 999px; z-index: 10; }
+
+/* Rezept */
+.zweispaltig { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+#rezept-dialog h3 { margin: 16px 0 6px; font-size: 1rem; }
+#rezept-dialog p:empty { display: none; }
+.zutatenliste { margin: 0; padding-left: 1.2em; }
+.schritte { margin: 0; padding-left: 1.4em; }
+.schritte li { margin-bottom: 8px; line-height: 1.45; }

@@ -64,6 +64,12 @@
       <label>Name<input name="name" required></label>
       <label>Zutaten <span class="leise">(eine pro Zeile, z. B. „500 g Nudeln“)</span>
         <textarea name="zutaten" rows="8"></textarea></label>
+      <label>Zubereitung <span class="leise">(ein Schritt pro Zeile)</span>
+        <textarea name="zubereitung" rows="6"></textarea></label>
+      <div class="zweispaltig">
+        <label>Portionen<input name="portionen" type="number" min="1" inputmode="numeric"></label>
+        <label>Von wem?<input name="quelle" placeholder="z. B. Oma"></label>
+      </div>
       <label class="zeile"><input type="checkbox" name="schnell"> Schnell (unter 30 Min.)</label>
       <div class="aktionen">
         <button class="knopf" value="speichern">Speichern</button>
@@ -73,10 +79,19 @@
     </form>
   </dialog>
 
+  <dialog id="rezept-dialog">
+    <div id="rezept-inhalt"></div>
+    <div class="aktionen">
+      <button class="knopf" id="rezept-bearbeiten">Bearbeiten</button>
+      <button class="knopf zweit" id="rezept-schliessen">Schließen</button>
+    </div>
+  </dialog>
+
   <script src="../gemeinsam/familie.js"></script>
   <script src="../gemeinsam/sync-firebase.js"></script>
   <script src="../gemeinsam/sync.js"></script>
   <script src="logik.js"></script>
+  <script src="rezepte.js"></script>
   <script src="essen.js"></script>
 </body>
 </html>
