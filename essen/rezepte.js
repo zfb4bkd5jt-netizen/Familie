@@ -410,5 +410,24 @@ window.FAMILIEN_REZEPTE = [
       'Danach Sahne und Crème fraîche zugeben, abschmecken und über die Schnitzel geben. 24 Stunden im Kühlschrank durchziehen lassen.',
       'Am nächsten Tag bei 180 °C ca. 1 Stunde backen.'
     ].join('\n')
+  },
+  {
+    id: 'rezept-pizza-babka',
+    name: 'Pizza-Babka',
+    quelle: 'salamico.de',
+    portionen: 3,
+    zutaten: ['180 g Mehl (Type 550)', '12 g Zucker', '20 ml Milch', '80 g Butter', '1 Ei', '15 g Hefe (frisch)', '50 g Sour Cream', '3 g Oregano', '3 g Knoblauchpulver', '240 g Mozzarella', 'Tomatenmark', '80 g Salami', '80 g Parmesan', '1 Zehe Knoblauch', '2 EL Petersilie', '1 Dose geschälte Tomaten (400 g)', '5 g Salz', 'Meersalz'],
+    zubereitung: [
+      'Rezept von https://salamico.de/index.php/rezepte/123-pizza-babka-das-rezept-zum-trend-aus-new-york-city (für 2–3 Personen). Von den 80 g Butter kommen 20 g in den Teig und 60 g in die Knoblauchbutter.',
+      'Teig: Hefe und Zucker in der Milch auflösen und kurz stehen lassen. Mit Mehl, Salz, 20 g Butter, Ei, Sour Cream, Oregano und Knoblauchpulver mindestens 10 Min. kneten. In einer geölten Schüssel mindestens 30 Min. warm gehen lassen.',
+      'Füllung: Mozzarella zerpflücken und auf einem Küchentuch trocknen lassen. Salami in dünne Scheiben oder Würfel schneiden, Parmesan reiben.',
+      'Knoblauchbutter: Petersilie hacken, Knoblauch pressen. 60 g Butter mit dem Knoblauch kurz erhitzen, vom Herd nehmen und die Petersilie unterrühren.',
+      'Tomatensoße: Tomaten im Topf mit dem Kartoffelstampfer zerdrücken, aufkochen, einige Minuten einkochen und mit Meersalz abschmecken.',
+      'Teig zu einem Rechteck (ca. 40 × 30 cm) ausrollen, dünn mit Tomatenmark bestreichen, Mozzarella und Salami bis zum Rand verteilen und Parmesan darüberstreuen.',
+      'Von der langen Seite her aufrollen, mit der Naht nach unten legen und der Länge nach halbieren. Die beiden Stränge zu einem Zopf drehen.',
+      'Den Zopf in eine geölte Backform legen und abgedeckt ca. 1 Stunde gehen lassen. Ofen auf 180 °C vorheizen.',
+      'Mit der Hälfte der Knoblauchbutter bestreichen und ca. 40 Min. backen. Danach mit der restlichen Butter bestreichen und kurz ruhen lassen.',
+      'In dicke Stücke schneiden und mit der Tomatensoße servieren.'
+    ].join('\n')
   }
 ];
