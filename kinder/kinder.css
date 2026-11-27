@@ -1,0 +1,59 @@
+/* Schule & Kita: Nachrichten ablegen, daraus Termine und Aufgaben machen. */
+.reiter { display: flex; gap: 0.4rem; margin-bottom: 0.8rem; }
+.reiter button {
+  flex: 1; min-height: 44px; border-radius: var(--radius); border: 1px solid var(--rand);
+  background: var(--karte); color: var(--text); font: inherit; font-weight: 600; cursor: pointer;
+}
+.reiter button[aria-selected="true"] { background: var(--akzent); color: var(--akzent-text); border-color: var(--akzent); }
+.reiter button small { display: block; font-weight: 400; font-size: 0.75rem; opacity: 0.85; }
+
+.eingabe textarea { min-height: 7.5rem; resize: vertical; }
+.eingabe .knoepfe { display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap; }
+.eingabe .knoepfe .knopf:last-child { flex: 1; }
+.tipp { font-size: 0.85rem; color: var(--text-leise); margin: 0.5rem 0 0; }
+.tipp summary { cursor: pointer; }
+.tipp ol { margin: 0.3rem 0 0; padding-left: 1.2rem; }
+
+.vorschlag { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.4rem 0.6rem; align-items: center; }
+.vorschlag input[type="checkbox"] { width: 1.4rem; min-height: 1.4rem; accent-color: var(--akzent); }
+.vorschlag .felder { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0.4rem; }
+.vorschlag .felder > * { min-width: 0; width: 100%; }
+.vorschlag .felder input[name="titel"] { grid-column: 1 / -1; }
+.vorschlag .felder select, .vorschlag .felder input[type="date"] { min-height: 38px; padding: 0.3rem 0.5rem; }
+.vorschlag.aus .felder { opacity: 0.45; }
+.vorschlag .quelle { grid-column: 2; font-size: 0.8rem; color: var(--text-leise); }
+
+.termin { display: flex; gap: 0.7rem; align-items: baseline; }
+.termin .wann { flex: none; min-width: 4.8rem; font-weight: 600; color: var(--akzent); }
+.termin .was { flex: 1; overflow-wrap: anywhere; }
+.termin.bald .wann { color: var(--gefahr); }
+
+.info .kopfzeile { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: var(--text-leise); }
+.info .kopfzeile button { background: none; border: 0; color: var(--text-leise); font: inherit; cursor: pointer; padding: 0.3rem; }
+.info .text { white-space: pre-wrap; overflow-wrap: anywhere; margin: 0.3rem 0; }
+.info .text.zu { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; cursor: pointer; }
+.info .chips { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+
+.leer { text-align: center; color: var(--text-leise); padding: 1.5rem 1rem; }
+
+dialog {
+  width: min(560px, 100vw - 1rem); max-height: 92vh; overflow: auto;
+  border: 0; border-radius: var(--radius); padding: 1rem 1.1rem;
+  background: var(--karte); color: var(--text);
+}
+dialog::backdrop { background: rgba(0, 0, 0, 0.45); }
+dialog h3 { margin: 0.4rem 0; }
+.zwei { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; align-items: end; }
+.aktionen { display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap; }
+.luecke { flex: 1; }
+.kind { display: flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0; border-bottom: 1px solid var(--rand); }
+.kind span { flex: 1; }
+
+.hinweis {
+  position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(1.5rem + env(safe-area-inset-bottom));
+  background: var(--text); color: var(--hg); padding: 0.6rem 1rem; border-radius: var(--radius);
+  display: flex; gap: 0.8rem; align-items: center; max-width: calc(100vw - 2rem); z-index: 20;
+}
+.hinweis button { background: none; border: 0; color: inherit; font: inherit; font-weight: 700; text-decoration: underline; cursor: pointer; }
+.hinweis[hidden] { display: none; }
+.leise { color: var(--text-leise); font-size: 0.9rem; margin: 0.2rem 0 0.5rem; }

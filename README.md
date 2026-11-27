@@ -7,6 +7,8 @@ Kleine Web-App, die den Mental Load in der Familie verringern soll: Dinge, an di
 - **Aufgaben & Routinen** (`aufgaben/`): wiederkehrende und einmalige Aufgaben (Müll, Arzttermine, Geburtstage, Elternabende …) mit Zuständigkeit und Erinnerung.
 - **Essensplan** (`essen/`): Wochenplan fürs Abendessen (Mittag am Wochenende), daraus automatisch die Einkaufsliste nach Supermarkt-Abteilungen, dazu die Familienrezeptsammlung (`essen/rezepte.js`). Tests: `node --test essen/logik.test.js`.
 
+- **Schule & Kita** (`kinder/`): pro Kind Nachrichten aus Schul- und Kita-App einfügen (Text oder per Live Text aus einem Screenshot). `kinder/logik.js` findet Daten, Uhrzeiten und „mitbringen/abgeben“ und schlägt Termine und Aufgaben vor, die nach dem Bestätigen als Aufgaben (Kategorie „Schule & Kita“) gespeichert werden und so auch in der Woche erscheinen. Key `familie.kinder.v1`. Tests: `node --test kinder/logik.test.js`.
+
 - **Woche** (`kalender/`): Wochenansicht mit Google-Kalender-Terminen (nur lesen, jede Person meldet sich auf ihrem Handy mit Google an), Aufgaben und Essen. Termine aus dem Abfallkalender werden automatisch zur Aufgabe „Tonne rausstellen“ am Vorabend. Braucht eine OAuth-Client-ID in `kalender/google.js`.
 
 - **Heute** (`heute/`, auf der Startseite): Hinweise wie „Benno hat Sport“ (Mo + Do, nicht in den Ferien), heutige Google-Termine, überfällige und heute fällige Aufgaben zum Abhaken und das Essen des Tages. Feste Hinweise und Ferien stehen in `heute/heute-logik.js`. Tests: `node --test heute/heute-logik.test.js`.
