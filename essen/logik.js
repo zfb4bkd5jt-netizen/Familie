@@ -192,7 +192,29 @@
     return ergebnis;
   }
 
-  const api = { KATEGORIEN, istGrundvorrat, kategorieRaten, zutatLesen, zutatSchreiben, isoDatum, wochenStart, wochenTage, isoWoche, einkaufslisteBilden, einkaufMitUebertrag, namensSchluessel, listeAlsText, vorschlagen, normalisiere };
+  // Text von Siri ("Milch und Butter", "dm: Zahnpasta, Duschgel") in einzelne Artikel zerlegen.
+  // Ein Präfix "<liste>:" legt die Liste fest. Zahlwörter am Anfang werden zu Ziffern.
+  const ZAHLWOERTER = { ein: 1, eine: 1, einen: 1, zwei: 2, drei: 3, vier: 4, fünf: 5, sechs: 6, sieben: 7, acht: 8, neun: 9, zehn: 10, zwölf: 12 };
+  function eingangLesen(text, listenIds = []) {
+    let rest = String(text == null ? '' : text).trim();
+    let liste = null;
+    const m = /^([a-zäöü]+)\s*:\s*/i.exec(rest);
+    if (m && listenIds.includes(m[1].toLowerCase())) { liste = m[1].toLowerCase(); rest = rest.slice(m[0].length); }
+    const posten = rest.split(/\s*(?:,|;|\n|\bund\b|\bsowie\b|\+)\s*/i)
+      .map(t => t.trim().replace(/[.!?]+$/, ''))
+      .filter(Boolean)
+      .map(t => {
+        const w = /^(\S+)\s+(.+)$/.exec(t);
+        if (w && ZAHLWOERTER[w[1].toLowerCase()]) t = ZAHLWOERTER[w[1].toLowerCase()] + ' ' + w[2];
+        const z = zutatLesen(t);
+        if (z && z.name) z.name = z.name.charAt(0).toUpperCase() + z.name.slice(1);
+        return z;
+      })
+      .filter(z => z && z.name);
+    return { liste, posten };
+  }
+
+  const api = { KATEGORIEN, istGrundvorrat, kategorieRaten, zutatLesen, zutatSchreiben, isoDatum, wochenStart, wochenTage, isoWoche, einkaufslisteBilden, einkaufMitUebertrag, namensSchluessel, eingangLesen, listeAlsText, vorschlagen, normalisiere };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   global.EssenLogik = api;
 })(typeof window !== 'undefined' ? window : globalThis);

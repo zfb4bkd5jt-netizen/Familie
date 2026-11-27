@@ -113,3 +113,17 @@ test('Offene Artikel wandern in die nächste Woche', () => {
   hak.b['a>milch|l'] = true;
   assert.equal(L.einkaufMitUebertrag(['a', 'b', 'c'], k => eigene[k], k => hak[k]).length, 0);
 });
+
+test('Siri-Text zerlegen', () => {
+  const ids = ['lidl', 'dm'];
+  const a = L.eingangLesen('Milch und Butter', ids);
+  assert.equal(a.liste, null);
+  assert.deepEqual(a.posten.map(z => z.name), ['Milch', 'Butter']);
+  const b = L.eingangLesen('dm: zahnpasta, Duschgel.', ids);
+  assert.equal(b.liste, 'dm');
+  assert.deepEqual(b.posten.map(z => z.name), ['Zahnpasta', 'Duschgel']);
+  const c = L.eingangLesen('zwei Liter Milch und 6 Eier', ids);
+  assert.deepEqual(c.posten.map(z => [z.menge, z.einheit, z.name]), [[2, 'l', 'Milch'], [6, '', 'Eier']]);
+  assert.deepEqual(L.eingangLesen('  ', ids).posten, []);
+  assert.equal(L.eingangLesen('Notiz: Brot', ids).posten[0].name, 'Notiz: Brot');
+});

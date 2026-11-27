@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#2f6f62">
+  <title>Siri-Kurzbefehl · Einkauf</title>
+  <link rel="stylesheet" href="../gemeinsam/style.css">
+  <style>
+    .leise { color: var(--text-leise); }
+    .feld { position: relative; margin: 6px 0 4px; }
+    .feld code { display: block; word-break: break-all; font-size: .8rem; background: var(--hg); padding: 10px 10px 10px 10px; border-radius: 8px; border: 1px solid var(--rand); }
+    .feld .knopf { margin-top: 6px; }
+    ol.schritte { padding-left: 1.3em; margin: 0; }
+    ol.schritte > li { margin-bottom: 16px; line-height: 1.45; }
+    .markiert { background: #ffe58a; color: #222; border-radius: 3px; padding: 0 2px; }
+    select { font: inherit; padding: 8px; border: 1px solid var(--rand); border-radius: 8px; background: var(--karte); color: var(--text); width: 100%; }
+    .hinweis { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--text); color: var(--karte); padding: 10px 16px; border-radius: 999px; z-index: 10; }
+  </style>
+</head>
+<body>
+  <header class="kopf">
+    <a href="index.html" aria-label="Zurück zum Essensplan">‹</a>
+    <h1>Siri-Kurzbefehl</h1>
+  </header>
+  <main class="inhalt">
+    <div id="nicht-verbunden" class="karte" hidden>
+      <p>Dieses Handy ist noch nicht mit eurer Familie verbunden. Der Kurzbefehl schickt die Artikel über den Abgleich, deshalb zuerst verbinden.</p>
+      <a class="knopf" href="../gemeinsam/abgleich.html">Handys verbinden</a>
+    </div>
+
+    <div id="anleitung" hidden>
+      <div class="karte">
+        <p><strong>„Hey Siri, LIDL“</strong> → Siri fragt, was auf die Liste soll → du sagst z. B. „Milch und Butter“. Beim nächsten Öffnen des Essensplans steht beides auf der Liste der laufenden Woche. Geht auch auf der Apple Watch.</p>
+        <label>Welche Liste soll der Kurzbefehl füllen?
+          <select id="liste"></select>
+        </label>
+        <p class="leise">Für eine zweite Liste (z. B. DM) richtest du einfach einen zweiten Kurzbefehl ein und wählst hier vorher die Liste.</p>
+      </div>
+
+      <div class="karte">
+        <p>Öffne die App <strong>Kurzbefehle</strong>, tippe auf <strong>+</strong> und füge diese Aktionen der Reihe nach hinzu (oben in der Suche den Namen eintippen):</p>
+        <ol class="schritte">
+          <li><strong>Nach Eingabe fragen</strong>. Bei „Frage“ eintragen: <em id="frage"></em></li>
+          <li><strong>Datum formatieren</strong>. Datum: <em>Aktuelles Datum</em>. Auf den Pfeil tippen, Datumsformat <em>Eigenes</em> wählen und als Format eintragen:
+            <div class="feld"><code>yyyyMMddHHmmssSSS</code></div></li>
+          <li><strong>Text</strong>. Diesen Text hineinkopieren:
+            <div class="feld"><code id="text"></code><button class="knopf zweit" data-kopieren="text">Text kopieren</button></div>
+            Dann das Wort <span class="markiert">EINGABE</span> löschen und an der Stelle über die Leiste über der Tastatur die Variable <em>Gefragte Eingabe</em> einsetzen. Die Anführungszeichen drumherum bleiben stehen.</li>
+          <li><strong>Inhalte von URL abrufen</strong>. Als URL diese Adresse kopieren:
+            <div class="feld"><code id="url"></code><button class="knopf zweit" data-kopieren="url">Adresse kopieren</button></div>
+            Ganz am Ende das Wort <span class="markiert">DATUM</span> löschen und dort die Variable <em>Formatiertes Datum</em> einsetzen.<br>
+            Dann auf den Pfeil tippen:
+            <ul>
+              <li>Methode: <strong>POST</strong></li>
+              <li>Header hinzufügen: Schlüssel <code>Content-Type</code>, Text <code>application/json</code></li>
+              <li>Anfragetext: <strong>Datei</strong>, und als Datei die Variable <em>Text</em> wählen</li>
+            </ul></li>
+          <li>Oben den Namen des Kurzbefehls auf <strong id="name"></strong> ändern. Das ist auch das, was du zu Siri sagst.</li>
+          <li>Für die Watch: unten auf <strong>ⓘ</strong> (Details) tippen und <strong>Auf Apple Watch anzeigen</strong> einschalten.</li>
+        </ol>
+      </div>
+
+      <div class="karte">
+        <p><strong>Ausprobieren:</strong> „Hey Siri, <span id="name2"></span>“ und z. B. „zwei Liter Milch und Bananen“ sagen. Dann den Essensplan öffnen, Reiter Einkauf.</p>
+        <p class="leise">Mehrere Sachen trennst du mit „und“ oder Komma. Was ihr schon einmal auf eine andere Liste verschoben habt (z. B. Zahnpasta auf DM), landet automatisch wieder dort. Die Adresse enthält euren Familien-Code: nicht weitergeben, wer sie hat, kann eure Listen ändern.</p>
+      </div>
+    </div>
+  </main>
+
+  <script src="../gemeinsam/familie.js"></script>
+  <script src="../gemeinsam/sync.js"></script>
+  <script>
+  (function () {
+    'use strict';
+    // Gleiche Werte wie in gemeinsam/sync-firebase.js (FIREBASE_KONFIG).
+    var PROJEKT = 'familie-d3360';
+    var API_KEY = 'AIzaSyDnrP2rEBQZv85L4EM7Sv0JpKV09ijSSBo';
+    var LISTEN = [['lidl', 'LIDL'], ['dm', 'DM'], ['heimweg', 'Heimweg'], ['ikea', 'IKEA'], ['baumarkt', 'Baumarkt'], ['apotheke', 'Apotheke']];
+    var $ = function (s) { return document.querySelector(s); };
+
+    var k = window.FamilieSync && FamilieSync.konfig();
+    if (!k || !k.familienCode) { $('#nicht-verbunden').hidden = false; return; }
+    $('#anleitung').hidden = false;
+
+    // Kurzes Zufallskürzel pro Einrichtung, damit zwei Handys nie dieselbe id erzeugen.
+    var kuerzel = Math.random().toString(36).slice(2, 6);
+    LISTEN.forEach(function (l) {
+      var o = document.createElement('option'); o.value = l[0]; o.textContent = l[1]; $('#liste').appendChild(o);
+    });
+
+    function zeigen() {
+      var id = $('#liste').value;
+      var name = LISTEN.find(function (l) { return l[0] === id; })[1];
+      $('#frage').textContent = 'Was soll auf die ' + name + '-Liste?';
+      $('#name').textContent = name; $('#name2').textContent = name;
+      $('#text').innerHTML = '{"fields":{"json":{"stringValue":"\\"' + id + ': <span class="markiert">EINGABE</span>\\""}}}';
+      $('#url').innerHTML = 'https://firestore.googleapis.com/v1/projects/' + PROJEKT + '/databases/(default)/documents/familien/' +
+        k.familienCode + '/daten?key=' + API_KEY + '&amp;documentId=familie.eingang.' + kuerzel + '-<span class="markiert">DATUM</span>';
+    }
+    $('#liste').addEventListener('change', zeigen);
+    zeigen();
+
+    document.querySelectorAll('[data-kopieren]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var text = document.getElementById(b.dataset.kopieren).textContent;
+        navigator.clipboard.writeText(text).then(function () { hinweis('Kopiert'); }, function () { hinweis('Kopieren ging nicht, bitte markieren'); });
+      });
+    });
+    function hinweis(t) {
+      var h = document.createElement('div'); h.className = 'hinweis'; h.textContent = t;
+      document.body.appendChild(h); setTimeout(function () { h.remove(); }, 1800);
+    }
+  })();
+  </script>
+</body>
+</html>
