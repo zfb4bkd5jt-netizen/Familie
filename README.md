@@ -5,6 +5,7 @@ Kleine Web-App, die den Mental Load in der Familie verringern soll: Dinge, an di
 ## Module
 
 - **Aufgaben & Routinen** (`aufgaben/`): wiederkehrende und einmalige Aufgaben (Müll, Arzttermine, Geburtstage, Elternabende …) mit Zuständigkeit und Erinnerung.
+- **Essensplan** (`essen/`): Wochenplan fürs Abendessen (Mittag am Wochenende), daraus automatisch die Einkaufsliste nach Supermarkt-Abteilungen, dazu die Familienrezeptsammlung (`essen/rezepte.js`). Tests: `node --test essen/logik.test.js`.
 
 ## Benutzen
 

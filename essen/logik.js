@@ -6,38 +6,43 @@
   const EINHEITEN = {
     g: 'g', gramm: 'g', kg: 'kg', ml: 'ml', l: 'l', liter: 'l',
     el: 'EL', tl: 'TL', stk: 'Stk', stück: 'Stk', stueck: 'Stk',
-    pck: 'Pck', packung: 'Pck', pkg: 'Pck', dose: 'Dose', dosen: 'Dose',
+    pck: 'Pck', pkt: 'Pck', packung: 'Pck', pkg: 'Pck', dose: 'Dose', dosen: 'Dose',
     becher: 'Becher', bund: 'Bund', glas: 'Glas', prise: 'Prise', zehe: 'Zehe', zehen: 'Zehe',
-    scheibe: 'Scheibe', scheiben: 'Scheibe', kopf: 'Kopf', netz: 'Netz'
+    scheibe: 'Scheibe', scheiben: 'Scheibe', kopf: 'Kopf', netz: 'Netz', kugel: 'Kugel', kugeln: 'Kugel',
+    flasche: 'Flasche', flaschen: 'Flasche', tüte: 'Tüte', tüten: 'Tüte', stange: 'Stange', stangen: 'Stange'
   };
 
   // Reihenfolge = Weg durch den Supermarkt
   const KATEGORIEN = ['Obst & Gemüse', 'Brot & Backwaren', 'Kühlregal', 'Fleisch & Fisch', 'Vorrat', 'Tiefkühl', 'Getränke', 'Sonstiges'];
 
+  // Stichworte passen als ganzes Wort, als Wortanfang oder als Wortende
+  // (deutsche Zusammensetzungen: "Frühstücksfleisch" endet auf "fleisch").
   const STICHWORTE = {
-    'Obst & Gemüse': ['apfel', 'äpfel', 'banane', 'zitrone', 'tomate', 'gurke', 'paprika', 'zwiebel', 'knoblauch', 'kartoffel', 'möhre', 'karotte', 'salat', 'eisbergsalat', 'zucchini', 'brokkoli', 'spinat', 'lauch', 'porree', 'pilz', 'champignon', 'kräuter', 'petersilie', 'schnittlauch', 'basilikum', 'aubergine', 'kürbis', 'mais', 'avocado', 'ingwer', 'sellerie', 'beeren', 'obst', 'gemüse'],
-    'Brot & Backwaren': ['brot', 'brötchen', 'toast', 'wrap', 'tortilla', 'baguette', 'fladenbrot', 'burgerbrötchen'],
-    'Kühlregal': ['milch', 'butter', 'sahne', 'joghurt', 'quark', 'käse', 'parmesan', 'mozzarella', 'feta', 'gouda', 'schmand', 'crème', 'creme', 'ei', 'eier', 'frischkäse', 'tofu', 'schinken', 'kochschinken', 'speck', 'aufschnitt'],
-    'Fleisch & Fisch': ['hack', 'hähnchen', 'huhn', 'pute', 'rind', 'schwein', 'wurst', 'würstchen', 'fisch', 'lachs', 'thunfisch', 'garnelen', 'fleisch', 'schnitzel', 'bratwurst'],
-    'Vorrat': ['nudel', 'spaghetti', 'penne', 'reis', 'mehl', 'zucker', 'salz', 'pfeffer', 'öl', 'olivenöl', 'rapsöl', 'sonnenblumenöl', 'essig', 'brühe', 'gemüsebrühe', 'hühnerbrühe', 'linsen', 'bohnen', 'kichererbsen', 'passierte', 'tomatenmark', 'gewürz', 'paprikapulver', 'curry', 'kokosmilch', 'sojasauce', 'senf', 'ketchup', 'honig', 'apfelmus', 'haferflocken', 'lasagneplatten', 'couscous', 'bulgur', 'backpulver', 'hefe', 'dosentomaten', 'gehackte tomaten'],
-    'Tiefkühl': ['tk', 'tiefkühl', 'erbsen', 'fischstäbchen', 'pommes', 'pizza'],
-    'Getränke': ['saft', 'wasser', 'sprudel', 'bier', 'wein', 'kaffee', 'tee']
+    'Obst & Gemüse': ['süßkartoffel', 'süßkartoffeln', 'chili', 'chilis', 'koriander', 'porree', 'apfel', 'äpfel', 'banane', 'bananen', 'zitrone', 'tomate', 'tomaten', 'gurke', 'gurken', 'paprika', 'paprikaschote', 'zwiebel', 'zwiebeln', 'knoblauch', 'knoblauchzehe', 'kartoffel', 'kartoffeln', 'möhre', 'möhren', 'karotte', 'salat', 'zucchini', 'brokkoli', 'spinat', 'lauch', 'porree', 'pilz', 'pilze', 'champignon', 'champignons', 'kräuter', 'petersilie', 'schnittlauch', 'basilikum', 'aubergine', 'kürbis', 'avocado', 'ingwer', 'sellerie', 'beeren', 'obst', 'gemüse', 'spargel', 'chilischote', 'suppengrün'],
+    'Brot & Backwaren': ['brot', 'brötchen', 'toast', 'wrap', 'wraps', 'tortilla', 'baguette'],
+    'Kühlregal': ['salami', 'sour', 'bacon', 'baconwürfel', 'schmand', 'katenschinken', 'milch', 'butter', 'margarine', 'sahne', 'joghurt', 'quark', 'käse', 'parmesan', 'mozzarella', 'feta', 'gouda', 'schmand', 'crème', 'creme', 'ei', 'eier', 'frischkäse', 'tofu', 'schinken', 'speck', 'aufschnitt', 'blätterteig', 'tortellini', 'tortelloni', 'fleischwurst'],
+    'Fleisch & Fisch': ['hack', 'hackfleisch', 'hähnchen', 'hähnchenbrust', 'huhn', 'pute', 'rind', 'schwein', 'wurst', 'würstchen', 'fisch', 'lachs', 'garnelen', 'fleisch', 'schnitzel'],
+    'Vorrat': ['knoblauchpulver', 'kurkuma', 'kreuzkümmel', 'kümmel', 'zimt', 'nelkenpulver', 'gemahlener', 'sauerkraut', 'geschälte', 'remoulade', 'hollandaise', 'sesamöl', 'mirin', 'würzmischung', 'currysauce', 'vollkornmehl', 'nudel', 'nudeln', 'spaghetti', 'penne', 'fussili', 'fusilli', 'farfalle', 'pasta', 'reis', 'mehl', 'zucker', 'salz', 'pfeffer', 'öl', 'olivenöl', 'rapsöl', 'sonnenblumenöl', 'essig', 'brühe', 'linsen', 'bohnen', 'kichererbsen', 'passierte', 'gehackte', 'tomatenmark', 'gewürz', 'paprikapulver', 'curry', 'currypaste', 'kokosmilch', 'sojasauce', 'senf', 'ketchup', 'honig', 'apfelmus', 'haferflocken', 'lasagneplatten', 'couscous', 'backpulver', 'hefe', 'mais', 'maiskörner', 'salsasauce', 'salsa', 'frühstücksfleisch', 'thunfisch', 'gewürzgurken', 'thymian', 'majoran', 'oregano', 'muskat', 'cayennepfeffer', 'chilipulver', 'pinienkerne', 'sonnenblumenkerne', 'speisestärke', 'zitronensaft', 'instantbrühe', 'schmelzkäse', 'sahneschmelzkäse', 'tortillachips', 'chips', 'mayonnaise', 'miracel', 'miracle', 'italienische', 'zwiebelpulver'],
+    'Tiefkühl': ['fischletti', 'tiefkühl', 'erbsen', 'fischstäbchen', 'pommes', 'pizza', 'rahmspinat'],
+    'Getränke': ['sake', 'sherry', 'grüntee', 'hojicha', 'mineralwasser', 'saft', 'wasser', 'sprudel', 'bier', 'wein', 'rotwein', 'weißwein', 'kaffee', 'tee']
   };
+
+  // Hat jede Küche da: kommt nicht auf die Einkaufsliste, steht aber im Rezept.
+  const GRUNDVORRAT = ['salz', 'meersalz', 'pfeffer', 'salz und pfeffer', 'salz, pfeffer', 'wasser', 'öl', 'fett'];
+  function istGrundvorrat(name) { return GRUNDVORRAT.includes(normalisiere(name)); }
 
   function normalisiere(text) {
     return String(text || '').trim().toLowerCase().replace(/\s+/g, ' ');
   }
 
   function kategorieRaten(name) {
-    const n = normalisiere(name);
-    const teile = n.split(/[\s-]+/);
-    // Kurze Stichworte (z. B. "ei", "tk") nur als ganzes Wort, längere auch als Wortanfang.
-    const passt = w => w.includes(' ') ? n.includes(w)
-      : teile.some(t => w.length <= 3 ? t === w : t.startsWith(w));
-    // Spezifisches zuerst: "TK-Erbsen" vor Gemüse, "passierte Tomaten" vor "Tomate".
-    for (const kat of ['Tiefkühl', 'Vorrat', 'Fleisch & Fisch', 'Kühlregal', 'Brot & Backwaren', 'Getränke', 'Obst & Gemüse']) {
-      if (STICHWORTE[kat].some(passt)) return kat;
-    }
+    const n = normalisiere(name).replace(/\(.*?\)/g, ' ');
+    const teile = n.split(/[\s,\-+/]+/).filter(Boolean);
+    if (teile.includes('tk')) return 'Tiefkühl';
+    const passt = w => teile.some(t => t === w || (w.length > 3 && (t.startsWith(w) || t.endsWith(w))));
+    // Bei mehreren Treffern gewinnt das letzte Wort (der Kern: "passierte Tomaten" → "passierte" zählt vor "Tomaten").
+    const reihenfolge = ['Vorrat', 'Kühlregal', 'Fleisch & Fisch', 'Tiefkühl', 'Brot & Backwaren', 'Getränke', 'Obst & Gemüse'];
+    for (const kat of reihenfolge) if (STICHWORTE[kat].some(passt)) return kat;
     return 'Sonstiges';
   }
 
@@ -124,6 +129,7 @@
       const g = nachId.get(id);
       if (!g) continue;
       for (const roh of g.zutaten || []) {
+        if (istGrundvorrat(roh.name)) continue;
         const z = basisEinheit(roh);
         const k = schluessel(z);
         const vorhanden = posten.get(k);
@@ -167,7 +173,7 @@
     return ergebnis;
   }
 
-  const api = { KATEGORIEN, kategorieRaten, zutatLesen, zutatSchreiben, isoDatum, wochenStart, wochenTage, isoWoche, einkaufslisteBilden, listeAlsText, vorschlagen, normalisiere };
+  const api = { KATEGORIEN, istGrundvorrat, kategorieRaten, zutatLesen, zutatSchreiben, isoDatum, wochenStart, wochenTage, isoWoche, einkaufslisteBilden, listeAlsText, vorschlagen, normalisiere };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   global.EssenLogik = api;
 })(typeof window !== 'undefined' ? window : globalThis);

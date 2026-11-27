@@ -64,3 +64,32 @@ test('Vorschläge vermeiden Wiederholungen', () => {
   assert.deepEqual(Object.values(v).sort(), ['b', 'c']);
   assert.equal(Object.keys(L.vorschlagen(['p1', 'p2', 'p3', 'p4'], [], g, () => 0)).length, 4);
 });
+
+test('Grundvorrat kommt nicht auf die Einkaufsliste', () => {
+  const g = [{ id: 'a', name: 'A', zutaten: ['1 TL Salz', 'Pfeffer', '250 ml Wasser', '1 EL Fett', '200 g Reis'].map(L.zutatLesen) }];
+  assert.deepEqual(L.einkaufslisteBilden(['a'], g).map(p => p.name), ['Reis']);
+});
+
+test('Zusammengesetzte Wörter landen in der richtigen Abteilung', () => {
+  const f = L.kategorieRaten;
+  assert.equal(f('Frühstücksfleisch'), 'Vorrat');
+  assert.equal(f('Kidneybohnen'), 'Vorrat');
+  assert.equal(f('Bandnudeln'), 'Vorrat');
+  assert.equal(f('Frühlingszwiebeln'), 'Obst & Gemüse');
+  assert.equal(f('Schlagsahne'), 'Kühlregal');
+  assert.equal(f('TK-Rahmspinat'), 'Tiefkühl');
+  assert.equal(f('Kichererbsen'), 'Vorrat');
+  assert.equal(f('Thymian (getrocknet)'), 'Vorrat');
+});
+
+test('Alle Familienrezepte sind lesbar und haben eindeutige ids', () => {
+  global.window = {};
+  require('./rezepte.js');
+  const rezepte = global.window.FAMILIEN_REZEPTE;
+  assert.ok(rezepte.length > 0);
+  assert.equal(new Set(rezepte.map(r => r.id)).size, rezepte.length);
+  for (const r of rezepte) {
+    assert.ok(r.name && r.zubereitung, r.id);
+    for (const z of r.zutaten) assert.ok(L.zutatLesen(z).name, `${r.id}: ${z}`);
+  }
+});

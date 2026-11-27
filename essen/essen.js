@@ -242,7 +242,9 @@
       absaetze.length ? el('h3', { text: 'Zubereitung' }) : null,
       absaetze.length ? el('ol', { class: 'schritte' }, absaetze.map(t => el('li', { text: t.replace(/^\d+[.)]\s*/, '') }))) : null
     );
-    $('#rezept-dialog').showModal();
+    const dlg = $('#rezept-dialog');
+    dlg.showModal();
+    dlg.scrollTop = 0; // showModal fokussiert den Knopf unten und scrollt sonst ans Ende
   }
   $('#rezept-bearbeiten').addEventListener('click', () => { $('#rezept-dialog').close(); bearbeiten(imRezept); });
   $('#rezept-schliessen').addEventListener('click', () => $('#rezept-dialog').close());
