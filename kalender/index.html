@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#2f6f62">
+  <title>Woche</title>
+  <link rel="stylesheet" href="../gemeinsam/style.css">
+  <link rel="stylesheet" href="kalender.css">
+</head>
+<body>
+  <header class="kopf">
+    <a href="../index.html" aria-label="Zur Startseite">‹</a>
+    <h1>Woche</h1>
+    <a href="#" id="einstellungen-oeffnen" aria-label="Kalender-Einstellungen">⚙︎</a>
+  </header>
+
+  <main class="inhalt">
+    <div class="navi">
+      <button class="knopf zweit klein" id="zurueck" aria-label="Vorherige Woche">‹</button>
+      <strong id="woche"></strong>
+      <button class="knopf zweit klein" id="vor" aria-label="Nächste Woche">›</button>
+    </div>
+    <button class="knopf zweit klein heute-knopf" id="heute">Heute</button>
+    <div id="google-status"></div>
+    <div id="tage"></div>
+  </main>
+
+  <dialog id="einstellungen">
+    <h3>Google Kalender</h3>
+    <p class="leise">Nur Lesezugriff. Jede Person meldet sich auf ihrem eigenen Handy an und sieht ihre eigenen und die mit ihr geteilten Kalender.</p>
+    <div id="konto"></div>
+    <h3>Diese Kalender anzeigen</h3>
+    <div id="kalender-liste"></div>
+    <h3>Müllabfuhr</h3>
+    <p class="leise">Termine aus diesem Kalender werden automatisch zur Aufgabe „Tonne rausstellen“ am Vorabend.</p>
+    <select id="abfall" aria-label="Abfallkalender"></select>
+    <div class="aktionen"><span class="luecke"></span><button class="knopf" id="einstellungen-schliessen">Fertig</button></div>
+  </dialog>
+
+  <div id="hinweis" class="hinweis" role="status" hidden></div>
+
+  <script src="../gemeinsam/familie.js"></script>
+  <script src="../gemeinsam/sync-firebase.js"></script>
+  <script src="../gemeinsam/sync.js"></script>
+  <script src="../aufgaben/aufgaben-daten.js"></script>
+  <script src="google.js"></script>
+  <script src="kalender.js"></script>
+</body>
+</html>
