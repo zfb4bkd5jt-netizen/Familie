@@ -429,5 +429,20 @@ window.FAMILIEN_REZEPTE = [
       'Mit der Hälfte der Knoblauchbutter bestreichen und ca. 40 Min. backen. Danach mit der restlichen Butter bestreichen und kurz ruhen lassen.',
       'In dicke Stücke schneiden und mit der Tomatensoße servieren.'
     ].join('\n')
+  },
+  {
+    id: 'rezept-burrata-pasta',
+    name: 'Burrata-Pasta mit Tomaten',
+    quelle: 'gaumenfreundin.de',
+    portionen: 4,
+    schnell: true,
+    zutaten: ['500 g Linguine', '800 g Kirschtomaten', '4 Kugeln Burrata', '4 Zehen Knoblauch', '4 EL Olivenöl', '1 TL Chiliflocken', '4 EL Basilikum', 'Salz und Pfeffer'],
+    zubereitung: [
+      'Rezept von https://www.gaumenfreundin.de/burrata-pasta-mit-tomaten/ (dort für 2 Portionen, hier verdoppelt für 4). Fertig in ca. 20 Min. Für die Kinder die Chiliflocken weglassen oder erst auf dem Teller dazugeben.',
+      'Knoblauch hacken. Olivenöl in einer großen Pfanne erhitzen, Knoblauch und Chiliflocken bei mittlerer Hitze kurz anschwitzen.',
+      'Kirschtomaten dazugeben, ca. 5 Min. braten und dabei mit dem Kochlöffel leicht zerdrücken.',
+      'Inzwischen die Nudeln nach Packungsangabe kochen. Mit einer Kelle Kochwasser zu den Tomaten geben, unterheben und mit Salz und Pfeffer abschmecken.',
+      'Auf Teller verteilen, auf jeden Teller eine Burrata setzen und mit gehacktem Basilikum bestreuen. Tipp von der Seite: geröstete Pinienkerne passen gut dazu.'
+    ].join('\n')
   }
 ];
