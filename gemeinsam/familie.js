@@ -79,7 +79,8 @@
     var daten = {};
     for (var i = 0; i < localStorage.length; i++) {
       var k = localStorage.key(i);
-      if (k.indexOf(PRAEFIX) === 0) daten[k] = laden(k, null);
+      // Anmelde-Token gehören nicht in eine Sicherung
+      if (k.indexOf(PRAEFIX) === 0 && k.indexOf(".geraet.token") < 0) daten[k] = laden(k, null);
     }
     return { format: "familie-export", version: 1, erstellt: new Date().toISOString(), daten: daten };
   }
