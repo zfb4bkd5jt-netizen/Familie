@@ -68,3 +68,5 @@ dialog label.zeile input { width: auto; }
 .schritte li { margin-bottom: 8px; line-height: 1.45; }
 #rezept-dialog h2 { text-transform: none; letter-spacing: 0; color: var(--text); font-size: 1.4rem; margin: 0 0 4px; }
 #liste-dialog h2 { text-transform: none; letter-spacing: 0; color: var(--text); font-size: 1.15rem; margin: 0 0 12px; }
+.siri-link { text-align: center; margin: 4px 0 16px; font-size: .9rem; }
+.siri-link a { color: var(--akzent); }

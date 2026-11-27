@@ -74,6 +74,10 @@
 
   // Neue Daten von einem anderen Gerät: übernehmen und neu zeichnen.
   window.addEventListener('familie:aktualisiert', e => {
+    if (e.detail && String(e.detail.key).startsWith(EINGANG)) {
+      if (eingangAbholen()) { if (!$('#gericht-dialog').open && !$('#rezept-dialog').open) zeigeAktuell(); hinweis('Neu von Siri auf der Liste'); }
+      return;
+    }
     if (e.detail && e.detail.key !== SPEICHER) return;
     const neu = Familie.laden(SPEICHER, null);
     if (!neu || !Array.isArray(neu.gerichte)) return;
@@ -118,6 +122,41 @@
     if (geaendert) speichern();
   }
   einkaufUmstellen();
+
+  // Eingangskorb: Der Siri-Kurzbefehl legt beim Abgleich-Dienst Einträge "familie.eingang.<id>"
+  // mit dem gesprochenen Text an. Hier werden sie auf die Liste der laufenden Woche gesetzt
+  // und danach gelöscht. Feste ids verhindern doppelte Einträge, wenn zwei Handys gleichzeitig abholen.
+  const EINGANG = 'familie.eingang.';
+  function eingangAbholen() {
+    const keys = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith(EINGANG)) keys.push(k);
+    }
+    if (!keys.length) return 0;
+    const k0 = L.isoDatum(wocheVon(new Date()));
+    const e = daten.einkauf[k0] || (daten.einkauf[k0] = { abgehakt: {}, extra: [] });
+    e.extra = e.extra || [];
+    let neu = 0;
+    for (const key of keys.sort()) {
+      const wert = Familie.laden(key, '');
+      const text = typeof wert === 'string' ? wert : (wert && wert.text) || '';
+      const { liste, posten } = L.eingangLesen(text, LISTEN.map(([id]) => id));
+      posten.forEach((z, i) => {
+        const id = 'siri-' + key.slice(EINGANG.length) + '-' + i;
+        if (e.extra.some(x => x.id === id)) return;
+        // Der LIDL-Kurzbefehl ist der Standard: gelernte Zuordnungen (Zahnpasta → DM) gelten trotzdem.
+        const ziel = (liste && liste !== STANDARDLISTE ? liste : null) || daten.zuordnung[L.namensSchluessel(z.name)] || STANDARDLISTE;
+        e.extra.push({ id, ...z, schluessel: 'extra|' + id, liste: ziel });
+        neu++;
+      });
+      localStorage.removeItem(key);
+      if (window.FamilieSync && FamilieSync.aktiv) FamilieSync.aktiv.geaendert(key);
+    }
+    speichern();
+    return neu;
+  }
+  eingangAbholen();
 
   // ---------- Woche ----------
   function zeigeWoche() {
