@@ -2,8 +2,8 @@
 (function () {
   "use strict";
 
-  var FILTER_KEY = "familie.aufgaben.filter";
-  var MELDUNG_KEY = "familie.aufgaben.letzteMeldung";
+  var FILTER_KEY = "familie.aufgaben.geraet.filter";
+  var MELDUNG_KEY = "familie.aufgaben.geraet.letzteMeldung";
   var filter = Familie.laden(FILTER_KEY, "alle");
 
   var $ = function (sel) { return document.querySelector(sel); };
@@ -350,6 +350,7 @@
   }
 
   window.addEventListener("storage", zeichnen);
+  window.addEventListener("familie:aktualisiert", function () { zeichnen(); if (einstellungen.open) personenZeichnen(); });
   document.addEventListener("visibilitychange", function () { if (!document.hidden) { zeichnen(); erinnern(false); } });
 
   zeichnen();

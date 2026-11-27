@@ -80,8 +80,12 @@
     <button class="knopf zweit" id="ics-export">📅 Alle in den Kalender (.ics)</button>
     <button class="knopf zweit" id="benachrichtigung">🔔 Hinweise beim Öffnen erlauben</button>
 
+    <h3>Handys verbinden</h3>
+    <p class="leise">Damit die ganze Familie dieselbe Liste sieht und abhaken kann.</p>
+    <a class="knopf zweit" href="../gemeinsam/abgleich.html">🔄 Handys verbinden</a>
+
     <h3>Sicherung</h3>
-    <p class="leise">Die Daten liegen nur auf diesem Gerät im Browser. Sichere sie ab und zu oder übertrage sie so auf ein anderes Gerät.</p>
+    <p class="leise">Die Daten liegen im Browser dieses Geräts. Sichere sie ab und zu oder übertrage sie so auf ein anderes Gerät.</p>
     <button class="knopf zweit" id="export">⬇︎ Sicherung herunterladen</button>
     <label class="knopf zweit datei">⬆︎ Sicherung einspielen<input type="file" id="import" accept="application/json,.json" hidden></label>
 
@@ -94,6 +98,8 @@
   <div id="hinweis" class="hinweis" role="status" hidden></div>
 
   <script src="../gemeinsam/familie.js"></script>
+  <script src="../gemeinsam/sync-firebase.js"></script>
+  <script src="../gemeinsam/sync.js"></script>
   <script src="aufgaben-daten.js"></script>
   <script src="aufgaben.js"></script>
 </body>

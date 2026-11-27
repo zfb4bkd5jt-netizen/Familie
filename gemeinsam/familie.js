@@ -2,8 +2,10 @@
  * Gemeinsame Basis für alle Familien-Module (Aufgaben, Essen, Kalender).
  * Klassisches Script, stellt das globale Objekt `Familie` bereit.
  *
- * Daten liegen nur lokal im Browser (localStorage). Alle Schlüssel beginnen
- * mit "familie.", damit Export/Import alles auf einmal sichern kann.
+ * Daten liegen im Browser (localStorage). Alle Schlüssel beginnen mit "familie.",
+ * damit Export/Import alles auf einmal sichern kann. Ist der Abgleich eingerichtet
+ * (gemeinsam/sync.js), werden sie mit den anderen Familien-Handys zusammengeführt.
+ * Keys mit ".geraet." bleiben nur auf diesem Gerät.
  */
 (function () {
   "use strict";
@@ -21,8 +23,10 @@
     }
   }
 
+  /* Speichert lokal und gibt die Änderung an den Abgleich weiter (falls eingerichtet). */
   function speichern(key, wert) {
     localStorage.setItem(key, JSON.stringify(wert));
+    if (window.FamilieSync && window.FamilieSync.aktiv) window.FamilieSync.aktiv.geaendert(key);
   }
 
   function id() {

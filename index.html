@@ -28,13 +28,26 @@
         <span><strong>Essensplan</strong><small>Wochenplan und Einkaufsliste</small></span>
       </a>
     </nav>
+    <a class="karte modul" href="gemeinsam/abgleich.html">
+      <span class="symbol">🔄</span>
+      <span><strong>Handys verbinden</strong><small id="sync-info">Alle sehen dieselben Listen</small></span>
+    </a>
   </main>
   <script src="gemeinsam/familie.js"></script>
+  <script src="gemeinsam/sync-firebase.js"></script>
+  <script src="gemeinsam/sync.js"></script>
   <script src="aufgaben/aufgaben-daten.js"></script>
   <script>
     var offen = Aufgaben.alle().filter(function (a) {
       var s = Aufgaben.status(a); return s === "ueberfaellig" || s === "heute";
     }).length;
+    function syncInfo() {
+      var s = FamilieSync.status();
+      document.getElementById("sync-info").textContent = s === "aus" ? "Alle sehen dieselben Listen"
+        : s === "fehler" ? "Gerade keine Verbindung, wird nachgeholt" : "Verbunden";
+    }
+    window.addEventListener("familie:sync-status", syncInfo);
+    syncInfo();
     if (offen) document.getElementById("aufgaben-info").textContent = offen + " heute fällig oder überfällig";
   </script>
 </body>
