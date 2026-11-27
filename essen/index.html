@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Essensplan · Familie</title>
+  <link rel="stylesheet" href="../gemeinsam/style.css">
+  <link rel="stylesheet" href="essen.css">
+</head>
+<body>
+  <header class="kopf">
+    <a class="zurueck" href="../index.html" aria-label="Zur Startseite">‹</a>
+    <h1>Essensplan</h1>
+  </header>
+
+  <nav class="reiter" role="tablist">
+    <button role="tab" data-ansicht="woche" aria-selected="true">Woche</button>
+    <button role="tab" data-ansicht="einkauf">Einkauf</button>
+    <button role="tab" data-ansicht="gerichte">Gerichte</button>
+  </nav>
+
+  <main class="inhalt">
+    <section id="ansicht-woche">
+      <div class="wochenwahl">
+        <button class="knopf zweit" id="woche-zurueck" aria-label="Vorige Woche">‹</button>
+        <div id="woche-titel"></div>
+        <button class="knopf zweit" id="woche-vor" aria-label="Nächste Woche">›</button>
+      </div>
+      <div id="tage"></div>
+      <div class="aktionen">
+        <button class="knopf" id="vorschlag">Leere Tage füllen</button>
+        <button class="knopf zweit" id="woche-leeren">Woche leeren</button>
+      </div>
+    </section>
+
+    <section id="ansicht-einkauf" hidden>
+      <div class="wochenwahl"><div id="einkauf-titel"></div></div>
+      <form id="extra-form" class="extra">
+        <input id="extra-eingabe" placeholder="Noch etwas, z. B. 1 Pck Kaffee" autocomplete="off">
+        <button class="knopf">+</button>
+      </form>
+      <div id="einkaufsliste"></div>
+      <div class="aktionen">
+        <button class="knopf" id="teilen">Liste teilen</button>
+        <button class="knopf zweit" id="erledigte-ausblenden">Erledigte ausblenden</button>
+      </div>
+    </section>
+
+    <section id="ansicht-gerichte" hidden>
+      <div class="aktionen oben"><button class="knopf" id="neues-gericht">Neues Gericht</button></div>
+      <div id="gerichtliste"></div>
+      <details class="karte daten">
+        <summary>Daten sichern</summary>
+        <p class="leise">Ohne Abgleich liegt alles nur auf diesem Gerät. Mit Export bekommst du eine Datei, die du auf einem anderen Gerät wieder importieren kannst.</p>
+        <button class="knopf zweit" id="export">Exportieren</button>
+        <label class="knopf zweit">Importieren<input type="file" id="import" accept="application/json" hidden></label>
+      </details>
+    </section>
+  </main>
+
+  <dialog id="gericht-dialog">
+    <form method="dialog" id="gericht-form">
+      <h2 id="dialog-titel">Gericht</h2>
+      <label>Name<input name="name" required></label>
+      <label>Zutaten <span class="leise">(eine pro Zeile, z. B. „500 g Nudeln“)</span>
+        <textarea name="zutaten" rows="8"></textarea></label>
+      <label>Zubereitung <span class="leise">(ein Schritt pro Zeile)</span>
+        <textarea name="zubereitung" rows="6"></textarea></label>
+      <div class="zweispaltig">
+        <label>Portionen<input name="portionen" type="number" min="1" inputmode="numeric"></label>
+        <label>Von wem?<input name="quelle" placeholder="z. B. Oma"></label>
+      </div>
+      <label class="zeile"><input type="checkbox" name="schnell"> Schnell (unter 30 Min.)</label>
+      <div class="aktionen">
+        <button class="knopf" value="speichern">Speichern</button>
+        <button class="knopf zweit" value="abbrechen" formnovalidate>Abbrechen</button>
+        <button class="knopf zweit gefahr" value="loeschen" id="gericht-loeschen" formnovalidate>Löschen</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="rezept-dialog">
+    <div id="rezept-inhalt"></div>
+    <div class="aktionen">
+      <button class="knopf" id="rezept-bearbeiten">Bearbeiten</button>
+      <button class="knopf zweit" id="rezept-schliessen">Schließen</button>
+    </div>
+  </dialog>
+
+  <script src="../gemeinsam/familie.js"></script>
+  <script src="../gemeinsam/sync-firebase.js"></script>
+  <script src="../gemeinsam/sync.js"></script>
+  <script src="logik.js"></script>
+  <script src="rezepte.js"></script>
+  <script src="essen.js"></script>
+</body>
+</html>
