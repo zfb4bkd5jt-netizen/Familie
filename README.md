@@ -9,6 +9,8 @@ Kleine Web-App, die den Mental Load in der Familie verringern soll: Dinge, an di
 
 - **Schule & Kita** (`kinder/`): pro Kind Nachrichten aus Schul- und Kita-App einfügen (Text oder per Live Text aus einem Screenshot). `kinder/logik.js` findet Daten, Uhrzeiten und „mitbringen/abgeben“ und schlägt Termine und Aufgaben vor, die nach dem Bestätigen als Aufgaben (Kategorie „Schule & Kita“) gespeichert werden und so auch in der Woche erscheinen. Key `familie.kinder.v1`. Tests: `node --test kinder/logik.test.js`.
 
+- **Geburtstage & Geschenke** (`geburtstage/`): Geburtstage, Jahrestage und andere Anlässe mit einer Ideenliste pro Anlass. Gekaufte Ideen erscheinen nach dem Anlass unter „Früher geschenkt“. Pro Anlass entsteht eine jährliche Aufgabe „Geschenk für …“, die rechtzeitig vorher fällig wird und sich abhakt, sobald ein Geschenk als gekauft markiert ist. Tests: `node --test geburtstage/geburtstage.test.js`.
+
 - **Woche** (`kalender/`): Wochenansicht mit Google-Kalender-Terminen (nur lesen, jede Person meldet sich auf ihrem Handy mit Google an), Aufgaben und Essen. Termine aus dem Abfallkalender werden automatisch zur Aufgabe „Tonne rausstellen“ am Vorabend. Braucht eine OAuth-Client-ID in `kalender/google.js`.
 
 - **Heute** (`heute/`, auf der Startseite): Hinweise wie „Benno hat Sport“ (Mo + Do, nicht in den Ferien), heutige Google-Termine, überfällige und heute fällige Aufgaben zum Abhaken und das Essen des Tages. Feste Hinweise und Ferien stehen in `heute/heute-logik.js`. Tests: `node --test heute/heute-logik.test.js`.
@@ -39,3 +41,4 @@ Erinnerungen: Die App zeigt beim Öffnen, was überfällig, heute oder bald fäl
 - Abgleich: Jeder `familie.*`-Key wird synchronisiert, außer Keys mit `.geraet.` (nur dieses Gerät). Einträge in Listen brauchen ein `id`-Feld, damit sie einzeln zusammengeführt werden. Kommen Daten von einem anderen Gerät an, feuert `window` das Event `familie:aktualisiert` (`detail.key`); Module zeichnen dann neu. Script-Reihenfolge: `familie.js`, `sync-firebase.js`, `sync.js`, dann die Modul-Scripts.
 - Tests für den Abgleich: `node tests/sync.test.js`.
 - `aufgaben/aufgaben-daten.js` stellt `Aufgaben.termineZwischen(vonIso, bisIso)` bereit → `[{titel, datum, personId, kategorie, aufgabeId, modul: "aufgaben"}]`, z. B. für eine Kalenderübersicht.
+- `geburtstage/geburtstage-daten.js` stellt `Anlaesse.termineZwischen(vonIso, bisIso)` bereit → `[{titel, datum, art, anlassId, modul: "geburtstage"}]` und `Anlaesse.demnaechst()` (sortiert, mit `tage` bis zum Anlass), z. B. für eine Heute-Ansicht.

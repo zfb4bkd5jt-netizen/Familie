@@ -42,6 +42,10 @@
         <span class="symbol">✅</span>
         <span><strong>Aufgaben & Routinen</strong><small id="aufgaben-info">Müll, Arzttermine, Geburtstage, Elternabende</small></span>
       </a>
+      <a class="karte modul" href="geburtstage/">
+        <span class="symbol">🎂</span>
+        <span><strong>Geburtstage & Geschenke</strong><small id="geburtstage-info">Ideen sammeln, rechtzeitig erinnert werden</small></span>
+      </a>
       <a class="karte modul" href="essen/">
         <span class="symbol">🍽️</span>
         <span><strong>Essensplan</strong><small>Wochenplan und Rezepte</small></span>
@@ -56,6 +60,7 @@
   <script src="gemeinsam/sync-firebase.js"></script>
   <script src="gemeinsam/sync.js"></script>
   <script src="aufgaben/aufgaben-daten.js"></script>
+  <script src="geburtstage/geburtstage-daten.js"></script>
   <script src="kalender/google.js"></script>
   <script src="heute/heute-logik.js"></script>
   <script src="heute/heute.js"></script>
@@ -70,6 +75,11 @@
     }
     window.addEventListener("familie:sync-status", syncInfo);
     syncInfo();
+    var naechster = Anlaesse.demnaechst()[0];
+    if (naechster && naechster.tage <= 30) {
+      document.getElementById("geburtstage-info").textContent = Anlaesse.titel(naechster.anlass) + " " +
+        (naechster.tage === 0 ? "ist heute" : naechster.tage === 1 ? "ist morgen" : "in " + naechster.tage + " Tagen");
+    }
     if (offen) document.getElementById("aufgaben-info").textContent = offen + " heute fällig oder überfällig";
   </script>
 </body>
