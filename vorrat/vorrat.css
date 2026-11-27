@@ -1,0 +1,23 @@
+/* Vorrat – nutzt die Variablen aus gemeinsam/style.css */
+.kopf-knopf { border: 1px solid rgb(255 255 255 / .5); background: none; color: inherit; font: inherit; font-size: .9rem; padding: 6px 12px; border-radius: 999px; cursor: pointer; }
+.kopf-knopf[aria-pressed="true"] { background: var(--akzent-text); color: var(--akzent); font-weight: 600; }
+.erklaerung { color: var(--text-leise); font-size: .92rem; }
+.zur-liste { display: block; color: var(--akzent); font-weight: 600; text-decoration: none; }
+.leise { color: var(--text-leise); }
+
+.bereich h3 { margin: 0 0 8px; font-size: .85rem; text-transform: uppercase; letter-spacing: .04em; color: var(--text-leise); }
+.kacheln { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+.kachel { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-height: 48px; justify-content: center; padding: 8px 10px; border: 1px solid var(--rand); border-radius: 10px; background: var(--karte); color: var(--text); font: inherit; text-align: left; cursor: pointer; }
+.kachel .name { font-weight: 500; line-height: 1.2; hyphens: auto; overflow-wrap: anywhere; }
+.kachel small { font-size: .76rem; color: var(--text-leise); }
+.kachel.an { background: var(--akzent); border-color: var(--akzent); color: var(--akzent-text); }
+.kachel.an .name { font-weight: 700; }
+.kachel.an small { color: var(--akzent-text); opacity: .85; }
+.neu { width: 100%; margin-top: 4px; }
+
+.aktionen { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; }
+.gefahr { color: var(--gefahr) !important; border-color: var(--gefahr) !important; margin-left: auto; }
+dialog { border: 0; border-radius: var(--radius); padding: 16px; width: min(520px, 94vw); background: var(--karte); color: var(--text); }
+dialog::backdrop { background: rgb(0 0 0 / .35); }
+dialog h2 { margin-top: 0; text-transform: none; letter-spacing: 0; color: var(--text); font-size: 1.15rem; }
+.hinweis { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--text); color: var(--karte); padding: 10px 16px; border-radius: 999px; z-index: 10; white-space: nowrap; }

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#2f6f62">
+  <title>Vorrat · Familie</title>
+  <link rel="icon" href="../gemeinsam/logo.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../gemeinsam/icons/apple-touch-icon.png">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <meta name="apple-mobile-web-app-title" content="Familie">
+  <link rel="stylesheet" href="../gemeinsam/style.css">
+  <link rel="stylesheet" href="vorrat.css">
+</head>
+<body>
+  <header class="kopf">
+    <a href="../index.html" aria-label="Zur Startseite">‹</a>
+    <h1>Vorrat & Haushalt</h1>
+    <button class="kopf-knopf" id="bearbeiten" aria-pressed="false">Bearbeiten</button>
+  </header>
+
+  <main class="inhalt">
+    <p class="karte erklaerung">Etwas wird knapp? Tipp drauf, dann steht es auf der passenden Einkaufsliste. Ist es im Einkauf abgehakt, ist es hier wieder da.</p>
+    <a id="zur-liste" class="karte zur-liste" href="../essen/#einkauf" hidden></a>
+    <div id="bereiche"></div>
+    <button class="knopf zweit neu" id="neu" hidden>＋ Neuer Artikel</button>
+  </main>
+
+  <dialog id="artikel-dialog">
+    <form method="dialog" id="artikel-form">
+      <h2 id="dialog-titel">Artikel</h2>
+      <label>Name<input name="name" required autocomplete="off"></label>
+      <label>Wo im Haus?<select name="bereich"></select></label>
+      <label>Kommt auf die Liste<select name="liste"></select></label>
+      <div class="aktionen">
+        <button class="knopf" value="speichern">Speichern</button>
+        <button class="knopf zweit" value="abbrechen" formnovalidate>Abbrechen</button>
+        <button class="knopf zweit gefahr" value="loeschen" id="artikel-loeschen" formnovalidate>Löschen</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="../gemeinsam/familie.js"></script>
+  <script src="../gemeinsam/sync-firebase.js"></script>
+  <script src="../gemeinsam/sync.js"></script>
+  <script src="../essen/logik.js"></script>
+  <script src="logik.js"></script>
+  <script src="vorrat.js"></script>
+</body>
+</html>
