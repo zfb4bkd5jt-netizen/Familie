@@ -6,6 +6,7 @@ Kleine Web-App, die den Mental Load in der Familie verringern soll: Dinge, an di
 
 - **Aufgaben & Routinen** (`aufgaben/`): wiederkehrende und einmalige Aufgaben (Müll, Arzttermine, Geburtstage, Elternabende …) mit Zuständigkeit und Erinnerung.
 - **Essensplan** (`essen/`): Wochenplan fürs Abendessen (Mittag am Wochenende), daraus automatisch die Einkaufsliste nach Supermarkt-Abteilungen, dazu die Familienrezeptsammlung (`essen/rezepte.js`). Tests: `node --test essen/logik.test.js`.
+- **Vorrat & Haushalt** (`vorrat/`): häufige Dinge aus Küche, Bad und Haushalt. Ein Tipp auf „fast leer“ setzt den Artikel auf die passende Einkaufsliste des Essensplans (gelernte Zuordnung aus dem Einkauf zählt, sonst die Liste des Artikels, sonst LIDL). Wird er im Einkauf abgehakt, gilt er wieder als da. Daten unter `familie.vorrat.v1`. Tests: `node --test vorrat/logik.test.js`.
 
 - **Schule & Kita** (`kinder/`): pro Kind Nachrichten aus Schul- und Kita-App einfügen (Text oder per Live Text aus einem Screenshot). `kinder/logik.js` findet Daten, Uhrzeiten und „mitbringen/abgeben“ und schlägt Termine und Aufgaben vor, die nach dem Bestätigen als Aufgaben (Kategorie „Schule & Kita“) gespeichert werden und so auch in der Woche erscheinen. Key `familie.kinder.v1`. Tests: `node --test kinder/logik.test.js`.
 
