@@ -9,6 +9,8 @@ Kleine Web-App, die den Mental Load in der Familie verringern soll: Dinge, an di
 
 - **Woche** (`kalender/`): Wochenansicht mit Google-Kalender-Terminen (nur lesen, jede Person meldet sich auf ihrem Handy mit Google an), Aufgaben und Essen. Termine aus dem Abfallkalender werden automatisch zur Aufgabe „Tonne rausstellen“ am Vorabend. Braucht eine OAuth-Client-ID in `kalender/google.js`.
 
+- **Heute** (`heute/`, auf der Startseite): Hinweise wie „Benno hat Sport“ (Mo + Do, nicht in den Ferien), heutige Google-Termine, überfällige und heute fällige Aufgaben zum Abhaken und das Essen des Tages. Feste Hinweise und Ferien stehen in `heute/heute-logik.js`. Tests: `node --test heute/heute-logik.test.js`.
+
 ## Benutzen
 
 Keine Installation, kein Build. Einfach `index.html` im Browser öffnen, oder lokal starten:
