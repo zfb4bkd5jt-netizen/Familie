@@ -10,8 +10,8 @@
   "use strict";
 
   // OAuth-Client-ID (Typ "Webanwendung") aus der Google Cloud Console des Projekts familie-d3360.
-  // Kein Geheimnis. Wird eingetragen, sobald sie angelegt ist.
-  var CLIENT_ID = window.FAMILIE_GOOGLE_CLIENT_ID || null;
+  // Kein Geheimnis (das Client-Secret wird nicht gebraucht).
+  var CLIENT_ID = window.FAMILIE_GOOGLE_CLIENT_ID || "648806762840-96hbuurn967lekf8r62nr4ioog35teng.apps.googleusercontent.com";
   var SCOPE = "https://www.googleapis.com/auth/calendar.readonly";
   var API = "https://www.googleapis.com/calendar/v3";
 
