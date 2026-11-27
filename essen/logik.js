@@ -8,7 +8,7 @@
     el: 'EL', tl: 'TL', stk: 'Stk', stück: 'Stk', stueck: 'Stk',
     pck: 'Pck', pkt: 'Pck', packung: 'Pck', pkg: 'Pck', dose: 'Dose', dosen: 'Dose',
     becher: 'Becher', bund: 'Bund', glas: 'Glas', prise: 'Prise', zehe: 'Zehe', zehen: 'Zehe',
-    scheibe: 'Scheibe', scheiben: 'Scheibe', kopf: 'Kopf', netz: 'Netz',
+    scheibe: 'Scheibe', scheiben: 'Scheibe', kopf: 'Kopf', netz: 'Netz', kugel: 'Kugel', kugeln: 'Kugel',
     flasche: 'Flasche', flaschen: 'Flasche', tüte: 'Tüte', tüten: 'Tüte', stange: 'Stange', stangen: 'Stange'
   };
 
@@ -18,13 +18,13 @@
   // Stichworte passen als ganzes Wort, als Wortanfang oder als Wortende
   // (deutsche Zusammensetzungen: "Frühstücksfleisch" endet auf "fleisch").
   const STICHWORTE = {
-    'Obst & Gemüse': ['apfel', 'äpfel', 'banane', 'bananen', 'zitrone', 'tomate', 'tomaten', 'gurke', 'gurken', 'paprika', 'paprikaschote', 'zwiebel', 'zwiebeln', 'knoblauch', 'knoblauchzehe', 'kartoffel', 'kartoffeln', 'möhre', 'möhren', 'karotte', 'salat', 'zucchini', 'brokkoli', 'spinat', 'lauch', 'porree', 'pilz', 'pilze', 'champignon', 'champignons', 'kräuter', 'petersilie', 'schnittlauch', 'basilikum', 'aubergine', 'kürbis', 'avocado', 'ingwer', 'sellerie', 'beeren', 'obst', 'gemüse', 'spargel', 'chilischote', 'suppengrün'],
+    'Obst & Gemüse': ['süßkartoffel', 'süßkartoffeln', 'chili', 'chilis', 'koriander', 'porree', 'apfel', 'äpfel', 'banane', 'bananen', 'zitrone', 'tomate', 'tomaten', 'gurke', 'gurken', 'paprika', 'paprikaschote', 'zwiebel', 'zwiebeln', 'knoblauch', 'knoblauchzehe', 'kartoffel', 'kartoffeln', 'möhre', 'möhren', 'karotte', 'salat', 'zucchini', 'brokkoli', 'spinat', 'lauch', 'porree', 'pilz', 'pilze', 'champignon', 'champignons', 'kräuter', 'petersilie', 'schnittlauch', 'basilikum', 'aubergine', 'kürbis', 'avocado', 'ingwer', 'sellerie', 'beeren', 'obst', 'gemüse', 'spargel', 'chilischote', 'suppengrün'],
     'Brot & Backwaren': ['brot', 'brötchen', 'toast', 'wrap', 'wraps', 'tortilla', 'baguette'],
-    'Kühlregal': ['milch', 'butter', 'margarine', 'sahne', 'joghurt', 'quark', 'käse', 'parmesan', 'mozzarella', 'feta', 'gouda', 'schmand', 'crème', 'creme', 'ei', 'eier', 'frischkäse', 'tofu', 'schinken', 'speck', 'aufschnitt', 'blätterteig', 'tortellini', 'tortelloni', 'fleischwurst'],
+    'Kühlregal': ['bacon', 'baconwürfel', 'schmand', 'katenschinken', 'milch', 'butter', 'margarine', 'sahne', 'joghurt', 'quark', 'käse', 'parmesan', 'mozzarella', 'feta', 'gouda', 'schmand', 'crème', 'creme', 'ei', 'eier', 'frischkäse', 'tofu', 'schinken', 'speck', 'aufschnitt', 'blätterteig', 'tortellini', 'tortelloni', 'fleischwurst'],
     'Fleisch & Fisch': ['hack', 'hackfleisch', 'hähnchen', 'hähnchenbrust', 'huhn', 'pute', 'rind', 'schwein', 'wurst', 'würstchen', 'fisch', 'lachs', 'garnelen', 'fleisch', 'schnitzel'],
-    'Vorrat': ['nudel', 'nudeln', 'spaghetti', 'penne', 'fussili', 'fusilli', 'farfalle', 'pasta', 'reis', 'mehl', 'zucker', 'salz', 'pfeffer', 'öl', 'olivenöl', 'rapsöl', 'sonnenblumenöl', 'essig', 'brühe', 'linsen', 'bohnen', 'kichererbsen', 'passierte', 'gehackte', 'tomatenmark', 'gewürz', 'paprikapulver', 'curry', 'currypaste', 'kokosmilch', 'sojasauce', 'senf', 'ketchup', 'honig', 'apfelmus', 'haferflocken', 'lasagneplatten', 'couscous', 'backpulver', 'hefe', 'mais', 'maiskörner', 'salsasauce', 'salsa', 'frühstücksfleisch', 'thunfisch', 'gewürzgurken', 'thymian', 'majoran', 'oregano', 'muskat', 'cayennepfeffer', 'chilipulver', 'pinienkerne', 'sonnenblumenkerne', 'speisestärke', 'zitronensaft', 'instantbrühe', 'schmelzkäse', 'sahneschmelzkäse', 'tortillachips', 'chips', 'mayonnaise', 'miracel', 'miracle', 'italienische', 'zwiebelpulver'],
-    'Tiefkühl': ['tiefkühl', 'erbsen', 'fischstäbchen', 'pommes', 'pizza', 'rahmspinat'],
-    'Getränke': ['saft', 'wasser', 'sprudel', 'bier', 'wein', 'rotwein', 'weißwein', 'kaffee', 'tee']
+    'Vorrat': ['kurkuma', 'kreuzkümmel', 'kümmel', 'zimt', 'nelkenpulver', 'gemahlener', 'sauerkraut', 'geschälte', 'remoulade', 'hollandaise', 'sesamöl', 'mirin', 'würzmischung', 'currysauce', 'vollkornmehl', 'nudel', 'nudeln', 'spaghetti', 'penne', 'fussili', 'fusilli', 'farfalle', 'pasta', 'reis', 'mehl', 'zucker', 'salz', 'pfeffer', 'öl', 'olivenöl', 'rapsöl', 'sonnenblumenöl', 'essig', 'brühe', 'linsen', 'bohnen', 'kichererbsen', 'passierte', 'gehackte', 'tomatenmark', 'gewürz', 'paprikapulver', 'curry', 'currypaste', 'kokosmilch', 'sojasauce', 'senf', 'ketchup', 'honig', 'apfelmus', 'haferflocken', 'lasagneplatten', 'couscous', 'backpulver', 'hefe', 'mais', 'maiskörner', 'salsasauce', 'salsa', 'frühstücksfleisch', 'thunfisch', 'gewürzgurken', 'thymian', 'majoran', 'oregano', 'muskat', 'cayennepfeffer', 'chilipulver', 'pinienkerne', 'sonnenblumenkerne', 'speisestärke', 'zitronensaft', 'instantbrühe', 'schmelzkäse', 'sahneschmelzkäse', 'tortillachips', 'chips', 'mayonnaise', 'miracel', 'miracle', 'italienische', 'zwiebelpulver'],
+    'Tiefkühl': ['fischletti', 'tiefkühl', 'erbsen', 'fischstäbchen', 'pommes', 'pizza', 'rahmspinat'],
+    'Getränke': ['sake', 'sherry', 'grüntee', 'hojicha', 'mineralwasser', 'saft', 'wasser', 'sprudel', 'bier', 'wein', 'rotwein', 'weißwein', 'kaffee', 'tee']
   };
 
   // Hat jede Küche da: kommt nicht auf die Einkaufsliste, steht aber im Rezept.

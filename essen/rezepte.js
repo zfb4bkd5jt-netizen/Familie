@@ -207,5 +207,208 @@ window.FAMILIEN_REZEPTE = [
       'Mit dem verquirlten Ei bestreichen und ca. 20 Min. bei 150–200 °C im Ofen backen, bis er goldbraun ist.',
       'Unter den Käse können noch Tomatenscheiben, Zwiebeln, Kapern usw., der Fantasie sind keine Grenzen gesetzt!'
     ].join('\n')
+  },
+  {
+    id: 'rezept-gemuese-focaccia-feta',
+    name: 'Gemüse-Focaccia mit Feta',
+    portionen: 4,
+    zutaten: ['1 Zehe Knoblauch', '500 g Joghurt (natur)', '1 Zucchini', '2 kleine Paprika (z. B. gelb und rot)', '3 Möhren', '1 Zwiebel', '1 EL Tiefkühlkräuter-Mix', '150 g Feta', '4 Focaccia-Brötchen (oder 1 großes Fladenbrot)', '200 g gekochter Schinken (2 dicke Scheiben)', 'Cayennepfeffer', 'Salz', 'Pfeffer'],
+    zubereitung: [
+      'Knoblauch schälen und hacken, mit den TK-Kräutern, dem Joghurt und dem zerbröckelten Feta verrühren. Mit Salz und (weißem) Pfeffer abschmecken.',
+      'Gemüse (mittelgroße Zucchini, 2–3 Möhren, ca. 300 g, und die kleine Zwiebel) putzen bzw. schälen und klein schneiden.',
+      'Mit den Zwiebeln in einer Pfanne mit Öl unter Wenden 5–6 Minuten dünsten. Mit Salz und Cayennepfeffer abschmecken.',
+      'Focaccia (oder Fladenbrot) aufschneiden und mit dem Gemüse, dem Schinken (ca. 200–250 g) und der Joghurtsoße belegen.'
+    ].join('\n')
+  },
+  {
+    id: 'rezept-kartoffelpfanne-gruener-spargel',
+    name: 'Kartoffelpfanne mit grünem Spargel',
+    portionen: 4,
+    zutaten: ['1,5 kg kleine neue Kartoffeln', '500 g grüner Spargel', '1 Bund Frühlingszwiebeln', '125 g Baconwürfel', '3 EL Olivenöl', 'Parmesan', 'Kräuterquark', 'Salz', 'Pfeffer'],
+    zubereitung: [
+      'Kartoffeln unter fließendem Wasser abbürsten und in Salzwasser ca. 8 Minuten vorkochen.',
+      'Spargel (im unteren Drittel schälen und) Enden abschneiden. Stangen schräg in 5 cm große Stücke und Frühlingszwiebeln in Ringe schneiden.',
+      'Kartoffeln abgießen, abschrecken und längs halbieren.',
+      'Öl in einer großen Pfanne erhitzen, erst die Kartoffeln ca. 5 Min. rundum anbraten. Spargel, Bacon und Frühlingszwiebeln zugeben, salzen und pfeffern und ca. 10 Minuten unter Wenden weiterbraten.',
+      'Parmesan darüberhobeln und mit Kräuterquark (der von Lidl) servieren.'
+    ].join('\n')
+  },
+  {
+    id: 'rezept-nasi-goreng',
+    name: 'Nasi Goreng',
+    portionen: 4,
+    schnell: true,
+    zutaten: ['Reis (1 großer Pott und etwas extra)', '200 g gekochter Schinken', '3 rote Paprika', '1 Stange Porree', '5 Eier', '1 EL Curry', 'Sojasauce', 'Salz', 'Pfeffer'],
+    zubereitung: [
+      'Reis wie gewohnt kochen, in der Zwischenzeit die restlichen Zutaten (2–3 Paprika) klein schneiden.',
+      'Den gekochten Reis mit Schinken, Paprika und Porree in Öl anbraten.',
+      'Die Eier hinzugeben und stocken lassen.',
+      'Mit Curry, Sojasauce nach Belieben, Salz und Pfeffer würzen.'
+    ].join('\n')
+  },
+  {
+    id: 'rezept-suesskartoffel-curry',
+    name: 'Süßkartoffel-Curry mit Kokosmilch',
+    portionen: 4,
+    zutaten: ['1 Süßkartoffel', '1 Zwiebel', '3 Zehen Knoblauch', 'Ingwer (1 kleines Stück)', '1 rote Chili', '1 Dose gehackte Tomaten', '1 Dose Kichererbsen', '1 Dose Kokosmilch', 'Koriander oder Petersilie (frisch)', '1 TL Kurkuma', '1 TL Kreuzkümmel', '1 TL gemahlener Koriander', '1 TL Zimt', '1 TL Nelkenpulver', 'Reis', 'Olivenöl', 'Cayennepfeffer oder Chilipulver (optional)', 'Salz'],
+    zubereitung: [
+      'Kichererbsen in ein Sieb geben und unter fließendem Wasser abspülen.',
+      'Zwiebel würfeln, 2–3 Knoblauchzehen, Ingwer und Chili kleinhacken.',
+      'Öl in einer großen Pfanne erhitzen und die Zwiebeln 3–4 Min. darin anschwitzen. In der Zwischenzeit die Süßkartoffel schälen und würfeln.',
+      'Knoblauch, Ingwer und Chili dazugeben und auch die Gewürze (je ½–1 TL Kurkuma, Kreuzkümmel, Koriander, Zimt, Nelkenpulver) kurz in der Pfanne angehen lassen.',
+      'Mit den Tomaten ablöschen, Kichererbsen und Kokosmilch dazugeben. Die Süßkartoffelwürfel hinzugeben (sie sollten von der Soße bedeckt sein) und 25–45 Min. köcheln lassen, bis die Süßkartoffel durch ist.',
+      'Währenddessen den Reis kochen.',
+      'Zum Schluss mit Salz, Zimt und ggf. Cayennepfeffer oder Chilipulver abschmecken. Mit dem Reis anrichten und mit frischem Koriander garnieren.'
+    ].join('\n')
+  },
+  {
+    id: 'rezept-gebackene-suesskartoffel',
+    name: 'Gebackene Süßkartoffel aus dem Ofen',
+    portionen: 2,
+    zutaten: ['2 Süßkartoffeln', '1 Kugel Büffelmozzarella', '2 rote Chilis', 'Basilikum (frisch)', 'Zitrone (für frischen Saft)', 'Olivenöl', 'Salz'],
+    zubereitung: [
+      'Reicht für 2 Personen.',
+      'Mozzarella aus dem Kühlschrank holen, Ofen auf 180 °C Umluft vorheizen.',
+      'Süßkartoffeln gut abwaschen, in eine Ofenform geben, mit Öl beträufeln und kräftig salzen. Mit der Hand beides nochmal gut einreiben.',
+      'Mit einer Gabel mehrfach einstechen und ca. 45–60 Min. in den Ofen geben. Sie sind gar, wenn man mit der Gabel bis zur Mitte kommt.',
+      'In der Zwischenzeit 1–2 Chilis klein hacken und den Mozzarella klein schneiden.',
+      'Die Kartoffeln aus dem Ofen nehmen, mit Mozzarella, Chili und gezupftem Basilikum belegen. Mit frischem Zitronensaft beträufeln und ggf. etwas salzen.'
+    ].join('\n')
+  },
+  {
+    id: 'rezept-suesskartoffelbratlinge-erbsen',
+    name: 'Süßkartoffelbratlinge mit Erbsen',
+    portionen: null,
+    zutaten: ['400 g Süßkartoffeln', '100 g Kartoffeln', '100 g TK-Erbsen', '3 EL Haferflocken', 'Kurkuma', 'gemahlener Koriander', 'Salz', 'Pfeffer'],
+    zubereitung: [
+      'Aus dem BLW-Teil (Baby-led Weaning) des Rezeptbuchs.',
+      'Süßkartoffeln und Kartoffeln schälen, in 2 cm große Würfel schneiden und in einem kleinen Topf mit Wasser ca. 20 Min. weich kochen.',
+      'In ein Sieb schütten, sehr gut abtropfen lassen und in einer Schüssel mit einer Gabel oder dem Kartoffelstampfer zerdrücken.',
+      'In der Zwischenzeit die TK-Erbsen in einen Messbecher geben, mit kochendem Wasser übergießen (etwa doppelt so hoch wie die Erbsen) und ca. 7 Min. stehen lassen. Dann ebenfalls abtropfen lassen.',
+      'Zum Brei die Haferflocken und gewünschte Gewürze geben und gut verrühren. Anschließend die Erbsen unterheben.',
+      'Mit den Händen Bratlinge formen, etwa 5–6 cm Durchmesser und 1 cm hoch.',
+      'Entweder in der Pfanne bei mittlerer Hitze in Öl braten oder im Ofen bei 175–200 °C backen.'
+    ].join('\n')
+  },
+  {
+    id: 'rezept-erbsenpfannkuchen-kleinkinder',
+    name: 'Erbsenpfannkuchen für Kleinkinder',
+    portionen: null,
+    schnell: true,
+    zutaten: ['100 ml Mineralwasser (spritzig)', '200 g TK-Erbsen (oder frisch)', '1 Ei', '100 g Vollkornmehl', '½ TL Backpulver', '30 g Feta (optional)', '3 TL Petersilie (optional)', 'Öl'],
+    zubereitung: [
+      'Aus dem BLW-Teil des Rezeptbuchs, reicht für 2 Kleinkinder. Für Babys nur wenig oder gar keinen Feta (20–40 g).',
+      'Tiefgekühlte Erbsen zum Auftauen mit kochendem Wasser übergießen, danach das Wasser gut abgießen.',
+      'Alle Zutaten mit dem Pürierstab oder Standmixer zu einem gleichmäßigen Teig pürieren.',
+      'In einer Pfanne mit Öl von jeder Seite 3–4 Minuten goldbraun ausbacken. Alternativ geht auch ein Waffeleisen.',
+      'Oder im Backofen: Blech mit Backpapier auslegen (dünn mit Öl einpinseln, dann löst es sich besser), Teig ca. 0,5 cm dick ausstreichen und bei 180 °C Ober-/Unterhitze 15–20 Min. backen.',
+      'Halten sich 3–4 Tage in einer luftdichten Dose im Kühlschrank und lassen sich bis zu 3 Monate einfrieren.'
+    ].join('\n')
+  },
+  {
+    id: 'rezept-teuflisches-sauerkraut',
+    name: 'Teuflisches Sauerkraut',
+    portionen: 4,
+    zutaten: ['500 g Hackfleisch', '1 Dose Sauerkraut (400 g)', '1 Dose geschälte Tomaten (400 g)', '1 Zwiebel', '1,5 l Instantbrühe', '1 EL Öl', '1 EL Tomatenmark', '1 EL Mehl', '1 EL Tomatenketchup', 'Essig', 'Oregano', 'Kümmel (gemahlen)', 'Kartoffeln (als Beilage)', 'Pfeffer'],
+    zubereitung: [
+      'Sauerkraut aus der Dose vorher in einem Sieb abspülen.',
+      'Öl erhitzen, gehackte Zwiebel (ca. 100 g) und Hackfleisch darin anbraten.',
+      'Sauerkraut und gewürfelte Tomaten dazugeben, mit heißer Brühe auffüllen und etwa 15 Minuten kochen lassen.',
+      'Mit etwas Mehl binden und mit den Gewürzen (Ketchup, Essig, Oregano, Kümmel, Pfeffer) kräftig süßsauer abschmecken.',
+      'Dazu Kartoffeln. Lecker!'
+    ].join('\n')
+  },
+  {
+    id: 'rezept-schneller-flammkuchen',
+    name: 'Schneller Flammkuchen',
+    portionen: 3,
+    schnell: true,
+    zutaten: ['250 g Mehl', '125 ml Wasser', '2 EL Öl', '1 Prise Salz', '2 Zwiebeln', '100 g Speck (gewürfelt) oder Katenschinken', '1 Becher Schmand', '1 Becher Crème fraîche', 'Schnittlauch', 'Pfeffer'],
+    zubereitung: [
+      'Reicht für 2–3 Personen.',
+      'Die Zubereitung war auf dem Foto nicht zu sehen. Bitte nachtragen.'
+    ].join('\n')
+  },
+  {
+    id: 'rezept-schnelle-quiche',
+    name: 'Schnelle Quiche',
+    portionen: null,
+    zutaten: ['1 Pck Blätterteig', '500 g Gemüse (z. B. grüner Spargel)', '300 ml Sauce Hollandaise', '3 Eier', '1 Pck Feta'],
+    zubereitung: [
+      'Gemüse (schälen und) schneiden. Ggf. vorgaren (bei den Möhren für Benno gemacht).',
+      'Blätterteig in eine Form geben und das Gemüse darauf verteilen.',
+      'Sauce Hollandaise und die Eier verrühren und darübergeben. Alternative Soße: 4 Eier, 1 Becher Schmand, 1 TL Salz und 2 Prisen Pfeffer.',
+      'Mit Fetabröseln toppen und etwa 40 Min. bei 180 °C Umluft in den Ofen.'
+    ].join('\n')
+  },
+  {
+    id: 'rezept-fischburger',
+    name: 'Fischburger',
+    portionen: 4,
+    schnell: true,
+    zutaten: ['4 Burger-Brötchen', '4 TK-Fischletti (Bofrost)', 'Remoulade', '1 Kopfsalat', '2 Tomaten', '1 Gurke', 'Butter', 'Salz', 'Pfeffer'],
+    zubereitung: [
+      'Im Rezeptbuch steht es pro Person, hier sind die Mengen für 4 gerechnet.',
+      'Fischletti nach Packungsangabe zubereiten.',
+      'Pro Burger von unten nach oben stapeln: Brötchen-Unterseite, Butter, 1 Fischletti, 3 Scheiben Gurke, Tomatenscheiben, etwas Salz und Pfeffer, (Kopf-)Salat, Remoulade, Brötchen-Deckel.'
+    ].join('\n')
+  },
+  {
+    id: 'rezept-spargelflammkuchen',
+    name: 'Spargelflammkuchen',
+    portionen: null,
+    zutaten: ['250 g Mehl', '125 ml Wasser', '15 g Hefe', '1 Bund grüner Spargel', '125 g Katenschinken', '400 g Crème fraîche', '125 g Parmesan (gehobelt)', 'Zucker', 'Olivenöl', 'Salz', 'Pfeffer'],
+    zubereitung: [
+      'Mehl in eine Schüssel sieben und eine Mulde in die Mitte drücken. Hefe in lauwarmes Wasser bröseln, auflösen und in die Mulde gießen.',
+      'Mit etwa 1 TL Salz und etwas Zucker zu einem glatten Teig verarbeiten und ca. 1 Stunde an einem warmen Ort gehen lassen.',
+      'In der Zwischenzeit den Spargel waschen, schälen, die holzigen Enden abschneiden und in sehr dünne schräge Scheiben schneiden.',
+      'Den Ofen auf 250 °C vorheizen und den Teig zu einem großen Fladen ausrollen.',
+      'Den Teig mit Crème fraîche bestreichen, gut würzen, Spargel und Schinken darauf verteilen. Mit Olivenöl beträufeln und noch mal gut mit Salz und Pfeffer würzen.',
+      'Zuletzt mit dem gehobelten Parmesan bestreuen und im Ofen 12–15 Min. backen.'
+    ].join('\n')
+  },
+  {
+    id: 'rezept-niku-chazuke',
+    name: 'Niku Chazuke',
+    portionen: 2,
+    schnell: true,
+    zutaten: ['300 g Rinderhackfleisch', 'Sesamöl (geröstet)', '4 EL Sake (oder Sherry)', '2 EL Mirin (oder Sherry)', '4 EL Sojasauce', '3 TL Rohrzucker', 'Reis (Basmati oder Sushi)', '2 Frühlingszwiebeln', '3 EL Hojicha oder anderer Grüntee', 'Ingwer (1 kleines Stück)', '2 Eier (optional)'],
+    zubereitung: [
+      'Reicht für 2 Personen.',
+      'Reis aufsetzen. In einer Pfanne Sesamöl erhitzen und das Fleisch darin anbraten.',
+      'In der Zwischenzeit die Frühlingszwiebeln in feine Ringe schneiden. Ingwer (mit der Kante eines Löffels) schälen und klein reiben.',
+      'Sobald das Rindfleisch leicht goldbraune Stellen bekommt, Sake, Sojasauce, Mirin (1–2 EL) und Rohrzucker in die Pfanne geben und köcheln lassen, bis die Flüssigkeit etwas verdampft ist und eine schöne Soße entsteht.',
+      'Grünen Tee nach Packungsanweisung mit 300 ml Wasser kochen.',
+      'Den Reis auf zwei Teller geben, Fleisch darüber verteilen, mit Frühlingszwiebeln und Ingwer garnieren und mit einem guten Schuss Tee übergießen.',
+      'Sehr gut passt ein pochiertes Ei obendrauf.'
+    ].join('\n')
+  },
+  {
+    id: 'rezept-indische-reispfanne',
+    name: 'Indische Reispfanne',
+    portionen: 4,
+    zutaten: ['250 g Basmatireis', '500 g Hähnchenbrustfilet', '2 rote Paprika', '1 Zwiebel', '3 Bananen', '1 Glas Currysauce (Onkel Ben\'s Cremiges Curry)', 'Sahne', '2 EL Öl', 'Salz', 'Pfeffer'],
+    zubereitung: [
+      'Reis in kochendem Salzwasser garen.',
+      'Paprika waschen, putzen und in kleine Stücke schneiden.',
+      'Fleisch waschen, trocknen, würfeln und in heißem Öl 8–10 Min. braten, danach mit Salz und schwarzem Pfeffer würzen.',
+      'Zwiebel und Paprika zufügen und 5 Min. mitgaren.',
+      '2–3 Bananen in Stücke schneiden und zugeben (statt der Aprikosen aus dem Originalrezept).',
+      'Die Currysauce und etwas Sahne unterrühren, erhitzen und das Gericht nochmals abschmecken.'
+    ].join('\n')
+  },
+  {
+    id: 'rezept-schlemmerpfanne',
+    name: 'Schlemmerpfanne',
+    portionen: null,
+    zutaten: ['4 Putenschnitzel', '3 Zwiebeln', '20 g Butter', 'Champignons', '100 g gekochter Schinken', '100 g roher Schinken', '1 Becher Crème fraîche', '1 Becher Sahne', 'Würzmischung (Maggi Würzmischung 1)', 'Paprikapulver', 'Mehl', 'Öl', 'Salz', 'Pfeffer'],
+    zubereitung: [
+      'Am Vortag vorbereiten: Das Gericht zieht 24 Stunden im Kühlschrank durch.',
+      'Die 3–4 Schnitzel halbieren, würzen (Maggi Würzmischung 1, Paprika, Pfeffer, Salz), in Mehl wenden und ganz kurz in Öl anbraten. Anschließend in eine oder mehrere Auflaufformen schichten.',
+      'Champignons in derselben Pfanne kurz braten und wieder herausnehmen.',
+      'Die 2–3 Zwiebeln in Scheiben schneiden und in Butter andünsten, Champignons und gewürfelten Schinken zugeben.',
+      'Danach Sahne und Crème fraîche zugeben, abschmecken und über die Schnitzel geben. 24 Stunden im Kühlschrank durchziehen lassen.',
+      'Am nächsten Tag bei 180 °C ca. 1 Stunde backen.'
+    ].join('\n')
   }
 ];
