@@ -1,0 +1,60 @@
+.filter { display: flex; gap: 0.4rem; overflow-x: auto; padding-bottom: 0.4rem; }
+.filter button {
+  flex: none; min-height: 36px; padding: 0.3rem 0.85rem; border-radius: 999px;
+  border: 1px solid var(--rand); background: var(--karte); color: var(--text); font: inherit; cursor: pointer;
+}
+.filter button[aria-pressed="true"] { background: var(--akzent); color: var(--akzent-text); border-color: var(--akzent); }
+
+.aufgabe { display: flex; align-items: center; gap: 0.75rem; }
+.aufgabe .haken {
+  flex: none; width: 34px; height: 34px; border-radius: 50%;
+  border: 2px solid var(--akzent); background: transparent; cursor: pointer; font-size: 1rem; color: var(--akzent);
+}
+.aufgabe .haken:hover { background: var(--akzent); color: var(--akzent-text); }
+.aufgabe .text { flex: 1; min-width: 0; cursor: pointer; }
+.aufgabe .titel { font-weight: 600; overflow-wrap: anywhere; }
+.aufgabe .meta { font-size: 0.85rem; color: var(--text-leise); display: flex; flex-wrap: wrap; gap: 0.35rem 0.6rem; align-items: center; margin-top: 0.15rem; }
+.aufgabe.ueberfaellig { border-left: 4px solid var(--gefahr); }
+.aufgabe.heute { border-left: 4px solid var(--akzent); }
+.aufgabe.erledigt { opacity: 0.6; }
+.aufgabe.erledigt .titel { text-decoration: line-through; }
+.warn { color: var(--gefahr); font-weight: 600; }
+.person-punkt { display: inline-block; width: 0.7rem; height: 0.7rem; border-radius: 50%; margin-right: 0.25rem; vertical-align: -1px; }
+
+.leer { text-align: center; color: var(--text-leise); padding: 2rem 1rem; }
+.leer .knopf { margin-top: 0.8rem; }
+
+.plus {
+  position: fixed; right: 1.1rem; bottom: calc(1.1rem + env(safe-area-inset-bottom));
+  width: 58px; height: 58px; border-radius: 50%; font-size: 1.8rem; padding: 0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+dialog {
+  width: min(560px, 100vw - 1rem); max-height: 92vh; overflow: auto;
+  border: 0; border-radius: var(--radius); padding: 1rem 1.1rem;
+  background: var(--karte); color: var(--text);
+}
+dialog::backdrop { background: rgba(0, 0, 0, 0.45); }
+dialog h3 { margin: 0.4rem 0 0.4rem; }
+.zwei { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; align-items: end; }
+label.inline { display: flex; align-items: center; gap: 0.4rem; margin: 0; color: var(--text); }
+label.inline input { width: 4.5rem; }
+.aktionen { display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap; }
+.luecke { flex: 1; }
+.vorlagen { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.3rem; }
+.vorlagen button { border: 1px dashed var(--rand); background: transparent; color: var(--text); border-radius: 999px; padding: 0.3rem 0.7rem; font: inherit; font-size: 0.85rem; cursor: pointer; }
+.zeile { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+.person { display: flex; align-items: center; gap: 0.5rem; padding: 0.3rem 0; }
+.person span { flex: 1; }
+.leise { color: var(--text-leise); font-size: 0.9rem; margin: 0.2rem 0 0.5rem; }
+#einstellungen .knopf.zweit { width: 100%; margin-bottom: 0.4rem; }
+.datei { cursor: pointer; }
+
+.hinweis {
+  position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(5.5rem + env(safe-area-inset-bottom));
+  background: var(--text); color: var(--hg); padding: 0.6rem 1rem; border-radius: var(--radius);
+  display: flex; gap: 0.8rem; align-items: center; max-width: calc(100vw - 2rem); z-index: 20;
+}
+.hinweis button { background: none; border: 0; color: inherit; font: inherit; font-weight: 700; text-decoration: underline; cursor: pointer; }
+.hinweis[hidden], .filter[hidden] { display: none; }

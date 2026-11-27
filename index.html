@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#2f6f62">
+  <title>Familie</title>
+  <link rel="stylesheet" href="gemeinsam/style.css">
+  <style>
+    .modul { display: flex; align-items: center; gap: 0.9rem; color: inherit; text-decoration: none; }
+    .modul .symbol { font-size: 1.8rem; }
+    .modul strong { display: block; }
+    .modul small { color: var(--text-leise); }
+  </style>
+</head>
+<body>
+  <header class="kopf"><h1>Familie</h1></header>
+  <main class="inhalt">
+    <p id="gruss" class="karte">Weniger im Kopf behalten müssen.</p>
+    <!-- Module: jeweils ein Ordner mit eigener index.html. Neue Module hier ergänzen. -->
+    <nav>
+      <a class="karte modul" href="aufgaben/">
+        <span class="symbol">✅</span>
+        <span><strong>Aufgaben & Routinen</strong><small id="aufgaben-info">Müll, Arzttermine, Geburtstage, Elternabende</small></span>
+      </a>
+      <a class="karte modul" href="essen/">
+        <span class="symbol">🍽️</span>
+        <span><strong>Essensplan</strong><small>Wochenplan und Einkaufsliste</small></span>
+      </a>
+    </nav>
+    <a class="karte modul" href="gemeinsam/abgleich.html">
+      <span class="symbol">🔄</span>
+      <span><strong>Handys verbinden</strong><small id="sync-info">Alle sehen dieselben Listen</small></span>
+    </a>
+  </main>
+  <script src="gemeinsam/familie.js"></script>
+  <script src="gemeinsam/sync-firebase.js"></script>
+  <script src="gemeinsam/sync.js"></script>
+  <script src="aufgaben/aufgaben-daten.js"></script>
+  <script>
+    var offen = Aufgaben.alle().filter(function (a) {
+      var s = Aufgaben.status(a); return s === "ueberfaellig" || s === "heute";
+    }).length;
+    function syncInfo() {
+      var s = FamilieSync.status();
+      document.getElementById("sync-info").textContent = s === "aus" ? "Alle sehen dieselben Listen"
+        : s === "fehler" ? "Gerade keine Verbindung, wird nachgeholt" : "Verbunden";
+    }
+    window.addEventListener("familie:sync-status", syncInfo);
+    syncInfo();
+    if (offen) document.getElementById("aufgaben-info").textContent = offen + " heute fällig oder überfällig";
+  </script>
+</body>
+</html>

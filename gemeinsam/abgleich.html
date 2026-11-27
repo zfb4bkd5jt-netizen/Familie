@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#2f6f62">
+  <title>Handys verbinden</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .status { font-weight: 600; }
+    .link { word-break: break-all; font-size: 0.85rem; background: var(--hg); padding: 0.5rem; border-radius: 8px; }
+    .knopf { width: 100%; margin-top: 0.5rem; }
+  </style>
+</head>
+<body>
+  <header class="kopf">
+    <a href="../index.html" aria-label="Zur Startseite">‹</a>
+    <h1>Handys verbinden</h1>
+  </header>
+  <main class="inhalt">
+    <div class="karte">
+      Abgleich: <span id="status" class="status">…</span>
+    </div>
+
+    <div id="nicht-bereit" class="karte" hidden>
+      Der Abgleich ist noch nicht fertig eingerichtet (Firebase-Konfiguration fehlt). Bis dahin bleiben die Daten auf diesem Gerät.
+    </div>
+
+    <div id="aus" class="karte" hidden>
+      <p>Damit alle in der Familie dieselben Listen sehen, verbindest du eure Handys. Du startest hier eine Familie und schickst den Einladungslink an die anderen.</p>
+      <p class="leise" style="color:var(--text-leise)">Hast du schon einen Einladungslink bekommen? Dann öffne einfach diesen Link auf dem Handy.</p>
+      <button class="knopf" id="starten">Familie starten</button>
+    </div>
+
+    <div id="an" class="karte" hidden>
+      <p>Schick diesen Link an alle, die mitmachen sollen. Wer ihn öffnet, ist verbunden. Behandle ihn wie einen Schlüssel: Wer den Link hat, kann eure Listen lesen und ändern.</p>
+      <div id="link" class="link"></div>
+      <button class="knopf" id="teilen">Einladungslink teilen</button>
+      <button class="knopf zweit" id="trennen">Dieses Gerät trennen</button>
+    </div>
+  </main>
+
+  <script src="familie.js"></script>
+  <script src="sync-firebase.js"></script>
+  <script src="sync.js"></script>
+  <script>
+    (function () {
+      var texte = { aus: "aus", aktuell: "✓ verbunden und aktuell", ausstehend: "⏳ Änderungen werden übertragen", fehler: "⚠︎ gerade keine Verbindung, wird nachgeholt" };
+      function zeigen() {
+        var k = FamilieSync.konfig();
+        var bereit = !!window.FamilieSyncAdapter && window.FamilieSyncAdapter("0".repeat(32)) !== null;
+        document.getElementById("nicht-bereit").hidden = bereit;
+        document.getElementById("aus").hidden = !bereit || !!k;
+        document.getElementById("an").hidden = !bereit || !k;
+        document.getElementById("status").textContent = texte[FamilieSync.status()] || FamilieSync.status();
+        if (k) document.getElementById("link").textContent = FamilieSync.einladungsLink();
+      }
+      window.addEventListener("familie:sync-status", zeigen);
+      document.getElementById("starten").addEventListener("click", function () {
+        FamilieSync.konfigSpeichern({ familienCode: FamilieSync.neuerCode() });
+        location.reload();
+      });
+      document.getElementById("teilen").addEventListener("click", function () {
+        var url = FamilieSync.einladungsLink();
+        if (navigator.share) navigator.share({ title: "Familie", text: "Unsere Familienlisten:", url: url }).catch(function () {});
+        else navigator.clipboard.writeText(url).then(function () { alert("Link kopiert"); });
+      });
+      document.getElementById("trennen").addEventListener("click", function () {
+        if (!confirm("Dieses Gerät trennen? Die Daten bleiben hier gespeichert, werden aber nicht mehr abgeglichen.")) return;
+        FamilieSync.konfigSpeichern(null);
+        localStorage.removeItem("familieSync.basis");
+        localStorage.removeItem("familieSync.offen");
+        location.reload();
+      });
+      zeigen();
+    })();
+  </script>
+</body>
+</html>
