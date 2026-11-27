@@ -9,6 +9,7 @@
   <style>
     .leise { color: var(--text-leise); }
     code { word-break: break-all; }
+    .blase { display: inline-block; background: #0a84ff; color: #fff; border-radius: 6px; padding: 0 6px; font-size: .85rem; white-space: nowrap; }
     .feld { position: relative; margin: 6px 0 4px; }
     .feld code { display: block; word-break: break-all; font-size: .8rem; background: var(--hg); padding: 10px 10px 10px 10px; border-radius: 8px; border: 1px solid var(--rand); }
     .feld .knopf { margin-top: 6px; }
@@ -42,8 +43,9 @@
         <li><strong>URL öffnen</strong><br>
           Tippe in der Aktion auf das blaue Wort <em>„Codierte URL“</em> und lösche es. Füge dann diese Adresse ein:
           <div class="feld"><code id="einfach-url"></code><button class="knopf" data-kopieren="einfach-url">Adresse kopieren</button></div>
-          Direkt dahinter (ohne Leerzeichen) in der Leiste über der Tastatur auf <em>„Codierte URL“</em> tippen. So sieht es dann aus:<br>
-          <code class="leise" id="beispiel"></code></li>
+Danach <strong>nichts tippen</strong>, sondern in der grauen Leiste direkt über der Tastatur auf die <span class="blase">Codierte URL</span>-Blase tippen. Siehst du sie nicht: „Variable auswählen“ und dann die Aktion „URL codieren“ antippen.<br>
+          So sieht es richtig aus: <code id="beispiel"></code><span class="blase">Codierte URL</span><br>
+          <span class="leise">Die blaue Blase ist eine Variable. Wird stattdessen der Text „Codierte URL“ eingetippt, landet genau dieser Text auf der Liste.</span></li>
         <li>Oben auf den Namen tippen, <strong>Umbenennen</strong>, und <strong class="name">LIDL</strong> eintragen. Fertig.</li>
       </ol>
       <p><strong>Ausprobieren:</strong> „Hey Siri, <span class="name">LIDL</span>“ → „zwei Liter Milch und Bananen“.</p>
@@ -105,7 +107,7 @@
       document.querySelectorAll('.name').forEach(function (e) { e.textContent = name; });
       var adresse = basis + (id === 'lidl' ? '' : encodeURIComponent(id + ': '));
       $('#einfach-url').textContent = adresse;
-      $('#beispiel').textContent = adresse + '[Codierte URL]';
+      $('#beispiel').textContent = adresse;
       if (!verbunden) return;
       $('#text').innerHTML = '{"fields":{"json":{"stringValue":"\\"' + id + ': <span class="markiert">EINGABE</span>\\""}}}';
       $('#url').innerHTML = 'https://firestore.googleapis.com/v1/projects/' + PROJEKT + '/databases/(default)/documents/familien/' +
