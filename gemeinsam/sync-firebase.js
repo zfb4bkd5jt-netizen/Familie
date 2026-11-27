@@ -9,9 +9,17 @@
   "use strict";
 
   // Öffentliche Web-Konfiguration aus der Firebase-Konsole (kein Geheimnis).
-  var FIREBASE_KONFIG = null; // wird eingetragen, sobald das Firebase-Projekt existiert
+  var FIREBASE_KONFIG = {
+    apiKey: "AIzaSyDnrP2rEBQZv85L4EM7Sv0JpKV09ijSSBo",
+    authDomain: "familie-d3360.firebaseapp.com",
+    projectId: "familie-d3360",
+    storageBucket: "familie-d3360.firebasestorage.app",
+    messagingSenderId: "648806762840",
+    appId: "1:648806762840:web:31036bd81e95b3c3913d2d"
+  };
 
-  var SDK = "https://www.gstatic.com/firebasejs/10.14.1/";
+  // Firebase-SDK 10.14.1 (compat), liegt im Repo, damit die App ohne fremdes CDN läuft.
+  var SDK = (document.currentScript && document.currentScript.src || "").replace(/sync-firebase\.js.*$/, "vendor/");
 
   function scriptLaden(url) {
     return new Promise(function (ok, fehler) {
@@ -35,7 +43,10 @@
       .then(function () { return scriptLaden(SDK + "firebase-firestore-compat.js"); })
       .then(function () {
         var app = firebase.apps.length ? firebase.app() : firebase.initializeApp(FIREBASE_KONFIG);
-        return app.firestore();
+        var db = app.firestore();
+        // Daten auch offline im Browser zwischenspeichern
+        db.enablePersistence({ synchronizeTabs: true }).catch(function () {});
+        return db;
       });
 
     function sammlung(db) {
