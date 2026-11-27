@@ -1,0 +1,61 @@
+.anlass {
+  display: flex; align-items: center; gap: 0.8rem; width: 100%;
+  text-align: left; font: inherit; color: inherit; cursor: pointer;
+}
+.anlass .symbol { font-size: 1.6rem; flex: none; }
+.anlass .text { flex: 1; min-width: 0; }
+.anlass .titel { display: block; font-weight: 600; overflow-wrap: anywhere; }
+.anlass .meta { display: flex; flex-wrap: wrap; gap: 0.3rem 0.6rem; align-items: center; font-size: 0.85rem; color: var(--text-leise); margin-top: 0.15rem; }
+.anlass.bald { border-left: 4px solid var(--akzent); }
+.anlass.heute { border-left: 4px solid var(--gefahr); }
+.chip.ok { background: color-mix(in srgb, var(--ok) 22%, transparent); }
+.chip.warn-chip { background: color-mix(in srgb, var(--gefahr) 18%, transparent); }
+
+.leer { text-align: center; color: var(--text-leise); padding: 2rem 1rem; }
+.leer .knopf { margin-top: 0.8rem; }
+
+.plus {
+  position: fixed; right: 1.1rem; bottom: calc(1.1rem + env(safe-area-inset-bottom));
+  width: 58px; height: 58px; border-radius: 50%; font-size: 1.8rem; padding: 0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+dialog {
+  width: min(560px, 100vw - 1rem); max-height: 92vh; overflow: auto;
+  border: 0; border-radius: var(--radius); padding: 1rem 1.1rem;
+  background: var(--karte); color: var(--text);
+}
+dialog::backdrop { background: rgba(0, 0, 0, 0.45); }
+dialog h3 { margin: 0.4rem 0 0.2rem; }
+dialog h4 { margin: 1.1rem 0 0.3rem; }
+.detail-kopf { display: flex; gap: 0.6rem; align-items: flex-start; }
+.detail-kopf > div { flex: 1; }
+.notiz { white-space: pre-wrap; background: var(--hg); border-radius: 8px; padding: 0.5rem 0.7rem; margin: 0.6rem 0; }
+.leise { color: var(--text-leise); font-size: 0.9rem; margin: 0.2rem 0 0.5rem; }
+
+.zeile { display: flex; gap: 0.5rem; margin: 0.3rem 0 0.5rem; }
+.drei { display: grid; grid-template-columns: 4.5rem 1fr 7.5rem; gap: 0.5rem; }
+
+.idee { display: flex; align-items: center; gap: 0.6rem; padding: 0.4rem 0; border-bottom: 1px solid var(--rand); }
+.idee-text { flex: 1; overflow-wrap: anywhere; }
+.idee .haken {
+  flex: none; width: 30px; height: 30px; border-radius: 50%;
+  border: 2px solid var(--akzent); background: transparent; color: var(--akzent-text); cursor: pointer; font-size: 0.9rem;
+}
+.idee.gekauft .haken { background: var(--akzent); }
+.idee.gekauft .idee-text::after { content: " · gekauft"; color: var(--ok); font-size: 0.85rem; }
+.idee .jahr { flex: none; width: 3rem; color: var(--text-leise); font-size: 0.85rem; }
+.idee .weg { flex: none; background: none; border: 0; color: var(--text-leise); font-size: 1rem; cursor: pointer; min-width: 36px; min-height: 36px; }
+details summary { cursor: pointer; color: var(--text-leise); margin: 0.8rem 0 0.3rem; }
+details .idee.gekauft .idee-text::after { content: ""; }
+
+.aktionen { display: flex; gap: 0.4rem; margin-top: 1rem; }
+.aktionen .knopf { padding: 0.5rem 0.8rem; }
+.luecke { flex: 1; }
+
+.hinweis {
+  position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(5.5rem + env(safe-area-inset-bottom));
+  background: var(--text); color: var(--hg); padding: 0.6rem 1rem; border-radius: var(--radius);
+  max-width: calc(100vw - 2rem); z-index: 20;
+}
+.hinweis[hidden] { display: none; }

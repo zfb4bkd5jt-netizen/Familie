@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#2f6f62">
+  <title>Geburtstage & Geschenke</title>
+  <link rel="icon" href="../gemeinsam/logo.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../gemeinsam/icons/apple-touch-icon.png">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <meta name="apple-mobile-web-app-title" content="Familie">
+  <link rel="stylesheet" href="../gemeinsam/style.css">
+  <link rel="stylesheet" href="geburtstage.css">
+</head>
+<body>
+  <header class="kopf">
+    <a href="../index.html" aria-label="Zur Startseite">‹</a>
+    <h1>Geburtstage & Geschenke</h1>
+  </header>
+
+  <main class="inhalt">
+    <div id="liste"></div>
+  </main>
+
+  <button class="knopf plus" id="neu" aria-label="Neuer Geburtstag oder Anlass">＋</button>
+
+  <!-- Ein Anlass mit Geschenkideen -->
+  <dialog id="detail">
+    <div class="detail-kopf">
+      <div>
+        <h3 id="d-titel"></h3>
+        <div id="d-meta" class="leise"></div>
+      </div>
+      <button class="knopf zweit klein" id="d-bearbeiten">Bearbeiten</button>
+    </div>
+    <p id="d-notiz" class="notiz" hidden></p>
+    <div id="d-erinnerung" class="leise"></div>
+
+    <h4>Geschenkideen</h4>
+    <form id="idee-form" class="zeile">
+      <input name="text" placeholder="z. B. Hörbuch, Gutschein Gartencenter" aria-label="Neue Idee" autocomplete="off">
+      <button class="knopf klein">Merken</button>
+    </form>
+    <div id="d-ideen"></div>
+    <details id="d-frueher" hidden>
+      <summary>Früher geschenkt</summary>
+      <div id="d-frueher-liste"></div>
+    </details>
+
+    <div class="aktionen">
+      <span class="luecke"></span>
+      <button class="knopf" id="d-schliessen">Fertig</button>
+    </div>
+  </dialog>
+
+  <!-- Anlegen / Bearbeiten -->
+  <dialog id="formular-dialog">
+    <form id="formular" method="dialog">
+      <h3 id="formular-titel">Neuer Geburtstag</h3>
+      <input type="hidden" name="id">
+      <label for="f-art">Was?</label>
+      <select id="f-art" name="art">
+        <option value="geburtstag">🎂 Geburtstag</option>
+        <option value="jahrestag">💍 Jahrestag</option>
+        <option value="sonstiges">🎁 Anderer Anlass</option>
+      </select>
+      <div id="f-titel-feld" hidden>
+        <label for="f-titel">Anlass</label>
+        <input id="f-titel" name="titel" placeholder="z. B. Muttertag, Taufe">
+      </div>
+      <label for="f-name" id="f-name-label">Wer?</label>
+      <input id="f-name" name="name" list="namen" placeholder="z. B. Opa Eddy" autocomplete="off">
+      <datalist id="namen"></datalist>
+      <label>Wann?</label>
+      <div class="drei">
+        <select name="tagZahl" aria-label="Tag"></select>
+        <select name="monat" aria-label="Monat"></select>
+        <input name="jahr" type="number" inputmode="numeric" min="1900" max="2100" placeholder="Jahr (optional)" aria-label="Jahr, optional">
+      </div>
+      <label for="f-vorlauf">Ans Geschenk erinnern</label>
+      <select id="f-vorlauf" name="vorlaufTage">
+        <option value="3">3 Tage vorher</option>
+        <option value="7">1 Woche vorher</option>
+        <option value="14">2 Wochen vorher</option>
+        <option value="21">3 Wochen vorher</option>
+        <option value="30">1 Monat vorher</option>
+        <option value="0">gar nicht</option>
+      </select>
+      <label for="f-person">Wer kümmert sich ums Geschenk?</label>
+      <select id="f-person" name="personId"></select>
+      <label for="f-notiz">Notiz</label>
+      <textarea id="f-notiz" name="notiz" rows="2" placeholder="z. B. Kleidergröße, mag keine Schokolade, Adresse"></textarea>
+      <div class="aktionen">
+        <button type="button" class="knopf zweit" id="loeschen" hidden>Löschen</button>
+        <span class="luecke"></span>
+        <button type="button" class="knopf zweit" id="abbrechen">Abbrechen</button>
+        <button type="submit" class="knopf">Speichern</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="hinweis" class="hinweis" role="status" hidden></div>
+
+  <script src="../gemeinsam/familie.js"></script>
+  <script src="../gemeinsam/sync-firebase.js"></script>
+  <script src="../gemeinsam/sync.js"></script>
+  <script src="../aufgaben/aufgaben-daten.js"></script>
+  <script src="geburtstage-daten.js"></script>
+  <script src="geburtstage.js"></script>
+</body>
+</html>
