@@ -1,0 +1,26 @@
+/* Heute-Ansicht auf der Startseite */
+.heute-karte { border-left: 4px solid var(--akzent); }
+.h-titel { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; margin: 0 0 0.4rem; color: var(--text); text-transform: none; letter-spacing: 0; font-size: 1.15rem; }
+.h-titel span { font-size: 0.9rem; font-weight: 400; color: var(--text-leise); }
+.h-liste { list-style: none; margin: 0; padding: 0; }
+.h-zeile { display: flex; gap: 0.6rem; align-items: center; padding: 0.45rem 0; border-top: 1px solid var(--rand); min-height: 2.6rem; }
+.h-zeile:first-child { border-top: 0; }
+.h-symbol { flex: none; width: 2.9rem; text-align: center; font-size: 1.1rem; }
+.h-zeit { font-size: 0.85rem; color: var(--text-leise); font-variant-numeric: tabular-nums; }
+.h-was { flex: 1; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 0.2rem 0.5rem; overflow-wrap: anywhere; }
+.h-was a { color: inherit; }
+.h-kal { font-size: 0.78rem; color: var(--text-leise); }
+.h-punkt { display: inline-block; width: 0.6rem; height: 0.6rem; border-radius: 50%; margin-right: 0.25rem; }
+.h-ueber { background: var(--gefahr); color: #fff; }
+.h-haken {
+  margin-left: auto; flex: none; width: 2.2rem; height: 2.2rem; border-radius: 50%;
+  border: 2px solid var(--rand); background: transparent; color: var(--text-leise); font: inherit; font-weight: 700; cursor: pointer;
+}
+.h-haken:active { background: var(--ok); border-color: var(--ok); color: #fff; }
+.hinweis-zeile .h-was { font-weight: 600; }
+.h-zeile.fertig, .h-zeile.vorbei { opacity: 0.5; }
+.h-zeile.fertig .h-was span { text-decoration: line-through; }
+.essen.leer a { color: var(--text-leise); }
+.h-ruhig { margin: 0.2rem 0 0.4rem; color: var(--text-leise); }
+.h-fuss { margin: 0.5rem 0 0; font-size: 0.85rem; color: var(--text-leise); }
+.h-link { border: 0; background: none; padding: 0; font: inherit; color: var(--akzent); text-decoration: underline; cursor: pointer; }

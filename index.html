@@ -10,19 +10,20 @@
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="apple-mobile-web-app-title" content="Familie">
   <link rel="stylesheet" href="gemeinsam/style.css">
+  <link rel="stylesheet" href="heute/heute.css">
   <style>
     .modul { display: flex; align-items: center; gap: 0.9rem; color: inherit; text-decoration: none; }
     .modul .symbol { font-size: 1.8rem; }
     .modul strong { display: block; }
     .modul small { color: var(--text-leise); }
-    .logo-gross { display: block; width: min(58vw, 230px); height: auto; margin: 0.25rem auto 0.75rem; }
+    .logo-gross { display: block; width: min(40vw, 160px); height: auto; margin: 0 auto 0.6rem; }
   </style>
 </head>
 <body>
   <header class="kopf"><h1>Familie Bieler</h1></header>
   <main class="inhalt">
     <img class="logo-gross" src="gemeinsam/logo.svg" alt="Team Bieler">
-    <p id="gruss" class="karte">Weniger im Kopf behalten müssen.</p>
+    <section id="heute" class="karte heute-karte" aria-label="Heute"></section>
     <!-- Module: jeweils ein Ordner mit eigener index.html. Neue Module hier ergänzen. -->
     <nav>
       <a class="karte modul" href="essen/#einkauf">
@@ -51,6 +52,9 @@
   <script src="gemeinsam/sync-firebase.js"></script>
   <script src="gemeinsam/sync.js"></script>
   <script src="aufgaben/aufgaben-daten.js"></script>
+  <script src="kalender/google.js"></script>
+  <script src="heute/heute-logik.js"></script>
+  <script src="heute/heute.js"></script>
   <script>
     var offen = Aufgaben.alle().filter(function (a) {
       var s = Aufgaben.status(a); return s === "ueberfaellig" || s === "heute";
