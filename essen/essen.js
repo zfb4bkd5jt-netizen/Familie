@@ -24,32 +24,32 @@
   const neueId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 
   // ---------- Daten ----------
-  function startGerichte() {
-    // Feste ids, damit zwei Handys beim ersten Start nicht doppelte Startgerichte anlegen.
-    const g = (name, zutaten, schnell = false) => ({ id: 'start-' + L.normalisiere(name).replace(/[^a-z0-9äöüß]+/g, '-'), name, schnell, zutaten: mitIds(zutaten.map(L.zutatLesen)) });
-    return [
-      g('Spaghetti Bolognese', ['500 g Spaghetti', '400 g Hackfleisch', '1 Dose passierte Tomaten', '1 Zwiebel', '2 Zehen Knoblauch', '1 Möhre', '50 g Parmesan']),
-      g('Pfannkuchen mit Apfelmus', ['250 g Mehl', '500 ml Milch', '3 Eier', '1 Glas Apfelmus'], true),
-      g('Gemüsecurry mit Reis', ['300 g Reis', '400 ml Kokosmilch', '1 Brokkoli', '2 Möhren', '1 Paprika', '2 EL Currypaste']),
-      g('Fischstäbchen mit Kartoffelpüree', ['1 Pck TK-Fischstäbchen', '1 kg Kartoffeln', '200 ml Milch', '30 g Butter', '300 g TK-Erbsen'], true),
-      g('Ofengemüse mit Feta', ['1 kg Kartoffeln', '2 Paprika', '1 Zucchini', '1 Zwiebel', '200 g Feta', '3 EL Olivenöl']),
-      g('Linsensuppe', ['250 g Linsen', '2 Möhren', '1 Stange Lauch', '500 g Kartoffeln', '1 l Gemüsebrühe', '4 Wiener Würstchen']),
-      g('Wraps mit Hähnchen', ['1 Pck Wraps', '400 g Hähnchenbrust', '1 Eisbergsalat', '2 Tomaten', '1 Gurke', '200 g Schmand'], true),
-      g('Nudelauflauf', ['500 g Penne', '200 g Kochschinken', '200 ml Sahne', '200 g Gouda', '300 g TK-Erbsen']),
-      g('Brotzeit', ['1 Brot', '150 g Käse', '150 g Aufschnitt', '1 Gurke', '4 Tomaten', 'Butter'], true),
-      g('Tomatensuppe mit Toast', ['2 Dosen gehackte Tomaten', '1 Zwiebel', '500 ml Gemüsebrühe', '100 ml Sahne', '1 Pck Toast'], true)
-    ];
-  }
-
   // Jeder Listeneintrag bekommt eine id, damit der Abgleich zwischen Geräten Einträge zusammenführen kann.
   function mitIds(zutaten) { return zutaten.filter(Boolean).map((z, i) => ({ id: 'z' + i, ...z })); }
 
   let daten = Familie.laden(SPEICHER, null);
   if (!daten || !Array.isArray(daten.gerichte)) {
-    daten = { version: 1, gerichte: startGerichte(), plan: {}, einkauf: {} };
+    daten = { version: 1, gerichte: [], plan: {}, einkauf: {} };
     speichern();
   }
   function speichern() { Familie.speichern(SPEICHER, daten); }
+
+  function gerichtEntfernen(id) {
+    daten.gerichte = daten.gerichte.filter(g => g.id !== id);
+    for (const [iso, e] of Object.entries(daten.plan)) {
+      for (const k of Object.keys(e)) if (e[k] === id) delete e[k];
+      if (!Object.keys(e).length) delete daten.plan[iso];
+    }
+  }
+
+  // Früher gab es zehn erfundene Beispielgerichte (ids "start-…"). Die gehören nicht
+  // zur Familiensammlung und werden entfernt, auch aus dem Plan.
+  function beispieleEntfernen() {
+    const alt = daten.gerichte.filter(g => String(g.id).startsWith('start-'));
+    alt.forEach(g => gerichtEntfernen(g.id));
+    if (alt.length) speichern();
+  }
+  beispieleEntfernen();
 
   // Familienrezepte aus rezepte.js einmalig übernehmen. Was ihr danach bearbeitet oder
   // löscht, bleibt so: jedes Rezept wird pro Familie nur ein Mal hinzugefügt.
@@ -282,12 +282,7 @@
       daten.gerichte = daten.gerichte.filter(g => g.id !== neu.id).concat(neu);
     } else if (wert === 'loeschen' && inBearbeitung) {
       if (!confirm(`„${inBearbeitung.name}“ löschen? Es verschwindet auch aus dem Plan.`)) return;
-      const id = inBearbeitung.id;
-      daten.gerichte = daten.gerichte.filter(g => g.id !== id);
-      for (const [iso, e] of Object.entries(daten.plan)) {
-        for (const k of Object.keys(e)) if (e[k] === id) delete e[k];
-        if (!Object.keys(e).length) delete daten.plan[iso];
-      }
+      gerichtEntfernen(inBearbeitung.id);
     } else return;
     speichern(); zeigeGerichte();
   });
@@ -307,7 +302,7 @@
       if (!Array.isArray(neu.gerichte) || typeof neu.plan !== 'object') throw new Error('Format');
       if (!confirm('Import ersetzt Gerichte, Plan und Einkaufslisten auf diesem Gerät. Weiter?')) return;
       daten = { version: 1, einkauf: {}, ...neu };
-      speichern(); zeigeAktuell(); hinweis('Import fertig');
+      beispieleEntfernen(); speichern(); zeigeAktuell(); hinweis('Import fertig');
     } catch { hinweis('Die Datei ist kein gültiger Essensplan-Export'); }
     e.target.value = '';
   });
