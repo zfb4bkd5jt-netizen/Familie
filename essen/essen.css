@@ -56,3 +56,4 @@ dialog label.zeile input { width: auto; }
 .zutatenliste { margin: 0; padding-left: 1.2em; }
 .schritte { margin: 0; padding-left: 1.4em; }
 .schritte li { margin-bottom: 8px; line-height: 1.45; }
+#rezept-dialog h2 { text-transform: none; letter-spacing: 0; color: var(--text); font-size: 1.4rem; margin: 0 0 4px; }
