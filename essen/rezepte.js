@@ -309,7 +309,7 @@ window.FAMILIEN_REZEPTE = [
     id: 'rezept-teuflisches-sauerkraut',
     name: 'Teuflisches Sauerkraut',
     portionen: 4,
-    zutaten: ['500 g Hackfleisch', '1 Dose Sauerkraut (400 g)', '1 Dose geschälte Tomaten (400 g)', '1 Zwiebel', '1,5 l Instantbrühe', '1 EL Öl', '1 EL Tomatenmark', '1 EL Mehl', '1 EL Tomatenketchup', 'Essig', 'Oregano', 'Kümmel (gemahlen)', 'Kartoffeln (als Beilage)', 'Pfeffer'],
+    zutaten: ['500 g Hackfleisch', '1 Dose Sauerkraut (400 g)', '1 Dose geschälte Tomaten (400 g)', '1 Zwiebel', '0,5 l Instantbrühe', '1 EL Öl', '1 EL Tomatenmark', '1 EL Mehl', '1 EL Tomatenketchup', 'Essig', 'Oregano', 'Kümmel (gemahlen)', 'Kartoffeln (als Beilage)', 'Pfeffer'],
     zubereitung: [
       'Sauerkraut aus der Dose vorher in einem Sieb abspülen.',
       'Öl erhitzen, gehackte Zwiebel (ca. 100 g) und Hackfleisch darin anbraten.',
