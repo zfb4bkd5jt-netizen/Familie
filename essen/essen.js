@@ -485,5 +485,13 @@
     return true;
   }
   window.addEventListener('hashchange', siriAusAdresse);
-  if (!siriAusAdresse()) zeigeAktuell();
+  // Direktlink von der Startseite: essen/#einkauf (optional #einkauf=dm) öffnet gleich die Einkaufsliste.
+  function reiterAusAdresse() {
+    const m = /^#einkauf(?:=(\w+))?$/.exec(location.hash);
+    if (!m) return false;
+    if (m[1] && LISTEN.some(([id]) => id === m[1])) aktuelleListe = m[1];
+    document.querySelector('.reiter button[data-ansicht="einkauf"]').click();
+    return true;
+  }
+  if (!siriAusAdresse() && !reiterAusAdresse()) zeigeAktuell();
 })();
