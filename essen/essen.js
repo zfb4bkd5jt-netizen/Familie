@@ -127,6 +127,24 @@
   // mit dem gesprochenen Text an. Hier werden sie auf die Liste der laufenden Woche gesetzt
   // und danach gelöscht. Feste ids verhindern doppelte Einträge, wenn zwei Handys gleichzeitig abholen.
   const EINGANG = 'familie.eingang.';
+  // Text wie „Milch und Butter“ oder „dm: Zahnpasta“ auf die Liste der laufenden Woche setzen.
+  function textEintragen(text, idBasis) {
+    const k0 = L.isoDatum(wocheVon(new Date()));
+    const e = daten.einkauf[k0] || (daten.einkauf[k0] = { abgehakt: {}, extra: [] });
+    e.extra = e.extra || [];
+    const { liste, posten } = L.eingangLesen(text, LISTEN.map(([id]) => id));
+    const namen = [];
+    posten.forEach((z, i) => {
+      const id = 'siri-' + idBasis + '-' + i;
+      if (e.extra.some(x => x.id === id)) return;
+      // Der LIDL-Kurzbefehl ist der Standard: gelernte Zuordnungen (Zahnpasta → DM) gelten trotzdem.
+      const ziel = (liste && liste !== STANDARDLISTE ? liste : null) || daten.zuordnung[L.namensSchluessel(z.name)] || STANDARDLISTE;
+      e.extra.push({ id, ...z, schluessel: 'extra|' + id, liste: ziel });
+      namen.push(z.name);
+    });
+    return namen;
+  }
+
   function eingangAbholen() {
     const keys = [];
     for (let i = 0; i < localStorage.length; i++) {
@@ -134,22 +152,11 @@
       if (k && k.startsWith(EINGANG)) keys.push(k);
     }
     if (!keys.length) return 0;
-    const k0 = L.isoDatum(wocheVon(new Date()));
-    const e = daten.einkauf[k0] || (daten.einkauf[k0] = { abgehakt: {}, extra: [] });
-    e.extra = e.extra || [];
     let neu = 0;
     for (const key of keys.sort()) {
       const wert = Familie.laden(key, '');
       const text = typeof wert === 'string' ? wert : (wert && wert.text) || '';
-      const { liste, posten } = L.eingangLesen(text, LISTEN.map(([id]) => id));
-      posten.forEach((z, i) => {
-        const id = 'siri-' + key.slice(EINGANG.length) + '-' + i;
-        if (e.extra.some(x => x.id === id)) return;
-        // Der LIDL-Kurzbefehl ist der Standard: gelernte Zuordnungen (Zahnpasta → DM) gelten trotzdem.
-        const ziel = (liste && liste !== STANDARDLISTE ? liste : null) || daten.zuordnung[L.namensSchluessel(z.name)] || STANDARDLISTE;
-        e.extra.push({ id, ...z, schluessel: 'extra|' + id, liste: ziel });
-        neu++;
-      });
+      neu += textEintragen(text, key.slice(EINGANG.length)).length;
       localStorage.removeItem(key);
       if (window.FamilieSync && FamilieSync.aktiv) FamilieSync.aktiv.geaendert(key);
     }
@@ -458,5 +465,19 @@
     setTimeout(() => h.remove(), 2500);
   }
 
-  zeigeAktuell();
+  // Einfacher Kurzbefehl: öffnet essen/index.html#siri=<Text>. Eintragen, Adresse aufräumen, Liste zeigen.
+  function siriAusAdresse() {
+    const m = /^#siri=(.*)$/.exec(location.hash);
+    if (!m) return false;
+    let text = m[1];
+    try { text = decodeURIComponent(text.replace(/\+/g, ' ')); } catch { /* Text so nehmen */ }
+    const namen = textEintragen(text, 'link-' + Date.now().toString(36));
+    speichern();
+    history.replaceState(null, '', location.pathname + location.search);
+    document.querySelector('.reiter button[data-ansicht="einkauf"]').click();
+    hinweis(namen.length ? 'Auf der Liste: ' + namen.join(', ') : 'Nichts erkannt');
+    return true;
+  }
+  window.addEventListener('hashchange', siriAusAdresse);
+  if (!siriAusAdresse()) zeigeAktuell();
 })();

@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="../gemeinsam/style.css">
   <style>
     .leise { color: var(--text-leise); }
+    code { word-break: break-all; }
     .feld { position: relative; margin: 6px 0 4px; }
     .feld code { display: block; word-break: break-all; font-size: .8rem; background: var(--hg); padding: 10px 10px 10px 10px; border-radius: 8px; border: 1px solid var(--rand); }
     .feld .knopf { margin-top: 6px; }
@@ -24,48 +25,55 @@
     <h1>Siri-Kurzbefehl</h1>
   </header>
   <main class="inhalt">
-    <div id="nicht-verbunden" class="karte" hidden>
-      <p>Dieses Handy ist noch nicht mit eurer Familie verbunden. Der Kurzbefehl schickt die Artikel über den Abgleich, deshalb zuerst verbinden.</p>
-      <a class="knopf" href="../gemeinsam/abgleich.html">Handys verbinden</a>
+    <div class="karte">
+      <p><strong>„Hey Siri, <span class="name">LIDL</span>“</strong> → Siri fragt, was auf die Liste soll → du sagst z. B. „Milch und Butter“ → der Essensplan geht kurz auf und zeigt die Liste mit den neuen Sachen.</p>
+      <label>Welche Liste?
+        <select id="liste"></select>
+      </label>
     </div>
 
-    <div id="anleitung" hidden>
-      <div class="karte">
-        <p><strong>„Hey Siri, LIDL“</strong> → Siri fragt, was auf die Liste soll → du sagst z. B. „Milch und Butter“. Beim nächsten Öffnen des Essensplans steht beides auf der Liste der laufenden Woche. Geht auch auf der Apple Watch.</p>
-        <label>Welche Liste soll der Kurzbefehl füllen?
-          <select id="liste"></select>
-        </label>
-        <p class="leise">Für eine zweite Liste (z. B. DM) richtest du einfach einen zweiten Kurzbefehl ein und wählst hier vorher die Liste.</p>
-      </div>
+    <div class="karte">
+      <p>Öffne die App <strong>Kurzbefehle</strong>, tippe oben rechts auf <strong>+</strong>. Unten auf <strong>„Aktion suchen“</strong> tippen und nacheinander diese drei Aktionen hinzufügen:</p>
+      <ol class="schritte">
+        <li><strong>Nach Eingabe fragen</strong><br>
+          <span class="leise">Fertig, mehr musst du nicht einstellen. Wer mag, tippt auf „Eingabe“ und schreibt als Frage: „Was soll auf die Liste?“</span></li>
+        <li><strong>URL codieren</strong><br>
+          <span class="leise">Auch fertig. Die Aktion nimmt automatisch, was du Siri sagst.</span></li>
+        <li><strong>URL öffnen</strong><br>
+          Tippe in der Aktion auf das blaue Wort <em>„Codierte URL“</em> und lösche es. Füge dann diese Adresse ein:
+          <div class="feld"><code id="einfach-url"></code><button class="knopf" data-kopieren="einfach-url">Adresse kopieren</button></div>
+          Direkt dahinter (ohne Leerzeichen) in der Leiste über der Tastatur auf <em>„Codierte URL“</em> tippen. So sieht es dann aus:<br>
+          <code class="leise" id="beispiel"></code></li>
+        <li>Oben auf den Namen tippen, <strong>Umbenennen</strong>, und <strong class="name">LIDL</strong> eintragen. Fertig.</li>
+      </ol>
+      <p><strong>Ausprobieren:</strong> „Hey Siri, <span class="name">LIDL</span>“ → „zwei Liter Milch und Bananen“.</p>
+      <p class="leise">Mehrere Sachen trennst du mit „und“ oder Komma. Was ihr schon einmal auf eine andere Liste verschoben habt (z. B. Zahnpasta auf DM), landet automatisch wieder dort. Ist das Handy gesperrt, fragt das iPhone kurz nach Face ID.</p>
+    </div>
 
-      <div class="karte">
-        <p>Öffne die App <strong>Kurzbefehle</strong>, tippe auf <strong>+</strong> und füge diese Aktionen der Reihe nach hinzu (oben in der Suche den Namen eintippen):</p>
+    <details class="karte">
+      <summary><strong>Für Profis: auch auf der Apple Watch</strong></summary>
+      <p class="leise">Die einfache Variante braucht das iPhone, weil sie den Essensplan öffnet. Diese Variante schickt den Text direkt an euren Abgleich und läuft auch auf der Watch, ist aber aufwendiger einzurichten.</p>
+      <div id="nicht-verbunden" hidden>
+        <p>Dieses Handy ist noch nicht mit eurer Familie verbunden. Dafür zuerst verbinden.</p>
+        <a class="knopf" href="../gemeinsam/abgleich.html">Handys verbinden</a>
+      </div>
+      <div id="anleitung" hidden>
         <ol class="schritte">
-          <li><strong>Nach Eingabe fragen</strong>. Bei „Frage“ eintragen: <em id="frage"></em></li>
+          <li><strong>Nach Eingabe fragen</strong>.</li>
           <li><strong>Datum formatieren</strong>. Datum: <em>Aktuelles Datum</em>. Auf den Pfeil tippen, Datumsformat <em>Eigenes</em> wählen und als Format eintragen:
             <div class="feld"><code>yyyyMMddHHmmssSSS</code></div></li>
           <li><strong>Text</strong>. Diesen Text hineinkopieren:
             <div class="feld"><code id="text"></code><button class="knopf zweit" data-kopieren="text">Text kopieren</button></div>
-            Dann das Wort <span class="markiert">EINGABE</span> löschen und an der Stelle über die Leiste über der Tastatur die Variable <em>Gefragte Eingabe</em> einsetzen. Die Anführungszeichen drumherum bleiben stehen.</li>
+            Dann das Wort <span class="markiert">EINGABE</span> löschen und an der Stelle die Variable <em>Gefragte Eingabe</em> einsetzen. Die Anführungszeichen drumherum bleiben stehen.</li>
           <li><strong>Inhalte von URL abrufen</strong>. Als URL diese Adresse kopieren:
             <div class="feld"><code id="url"></code><button class="knopf zweit" data-kopieren="url">Adresse kopieren</button></div>
-            Ganz am Ende das Wort <span class="markiert">DATUM</span> löschen und dort die Variable <em>Formatiertes Datum</em> einsetzen.<br>
-            Dann auf den Pfeil tippen:
-            <ul>
-              <li>Methode: <strong>POST</strong></li>
-              <li>Header hinzufügen: Schlüssel <code>Content-Type</code>, Text <code>application/json</code></li>
-              <li>Anfragetext: <strong>Datei</strong>, und als Datei die Variable <em>Text</em> wählen</li>
-            </ul></li>
-          <li>Oben den Namen des Kurzbefehls auf <strong id="name"></strong> ändern. Das ist auch das, was du zu Siri sagst.</li>
-          <li>Für die Watch: unten auf <strong>ⓘ</strong> (Details) tippen und <strong>Auf Apple Watch anzeigen</strong> einschalten.</li>
+            Ganz am Ende das Wort <span class="markiert">DATUM</span> löschen und dort die Variable <em>Formatiertes Datum</em> einsetzen.
+            Dann auf den Pfeil tippen: Methode <strong>POST</strong>, Header <code>Content-Type</code> = <code>application/json</code>, Anfragetext <strong>Datei</strong> mit der Variable <em>Text</em>.</li>
+          <li>Umbenennen in <strong class="name">LIDL</strong>, unter ⓘ <strong>Auf Apple Watch anzeigen</strong> einschalten.</li>
         </ol>
+        <p class="leise">Die Sachen erscheinen, sobald jemand den Essensplan öffnet. Die Adresse enthält euren Familien-Code: nicht weitergeben.</p>
       </div>
-
-      <div class="karte">
-        <p><strong>Ausprobieren:</strong> „Hey Siri, <span id="name2"></span>“ und z. B. „zwei Liter Milch und Bananen“ sagen. Dann den Essensplan öffnen, Reiter Einkauf.</p>
-        <p class="leise">Mehrere Sachen trennst du mit „und“ oder Komma. Was ihr schon einmal auf eine andere Liste verschoben habt (z. B. Zahnpasta auf DM), landet automatisch wieder dort. Die Adresse enthält euren Familien-Code: nicht weitergeben, wer sie hat, kann eure Listen ändern.</p>
-      </div>
-    </div>
+    </details>
   </main>
 
   <script src="../gemeinsam/familie.js"></script>
@@ -80,11 +88,13 @@
     var $ = function (s) { return document.querySelector(s); };
 
     var k = window.FamilieSync && FamilieSync.konfig();
-    if (!k || !k.familienCode) { $('#nicht-verbunden').hidden = false; return; }
-    $('#anleitung').hidden = false;
+    var verbunden = !!(k && k.familienCode);
+    $('#nicht-verbunden').hidden = verbunden;
+    $('#anleitung').hidden = !verbunden;
 
     // Kurzes Zufallskürzel pro Einrichtung, damit zwei Handys nie dieselbe id erzeugen.
     var kuerzel = Math.random().toString(36).slice(2, 6);
+    var basis = location.href.replace(/siri\.html.*$/, 'index.html#siri=');
     LISTEN.forEach(function (l) {
       var o = document.createElement('option'); o.value = l[0]; o.textContent = l[1]; $('#liste').appendChild(o);
     });
@@ -92,8 +102,11 @@
     function zeigen() {
       var id = $('#liste').value;
       var name = LISTEN.find(function (l) { return l[0] === id; })[1];
-      $('#frage').textContent = 'Was soll auf die ' + name + '-Liste?';
-      $('#name').textContent = name; $('#name2').textContent = name;
+      document.querySelectorAll('.name').forEach(function (e) { e.textContent = name; });
+      var adresse = basis + (id === 'lidl' ? '' : encodeURIComponent(id + ': '));
+      $('#einfach-url').textContent = adresse;
+      $('#beispiel').textContent = adresse + '[Codierte URL]';
+      if (!verbunden) return;
       $('#text').innerHTML = '{"fields":{"json":{"stringValue":"\\"' + id + ': <span class="markiert">EINGABE</span>\\""}}}';
       $('#url').innerHTML = 'https://firestore.googleapis.com/v1/projects/' + PROJEKT + '/databases/(default)/documents/familien/' +
         k.familienCode + '/daten?key=' + API_KEY + '&amp;documentId=familie.eingang.' + kuerzel + '-<span class="markiert">DATUM</span>';
