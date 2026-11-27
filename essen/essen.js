@@ -25,7 +25,8 @@
 
   // ---------- Daten ----------
   function startGerichte() {
-    const g = (name, zutaten, schnell = false) => ({ id: neueId(), name, schnell, zutaten: zutaten.map(L.zutatLesen) });
+    // Feste ids, damit zwei Handys beim ersten Start nicht doppelte Startgerichte anlegen.
+    const g = (name, zutaten, schnell = false) => ({ id: 'start-' + L.normalisiere(name).replace(/[^a-z0-9äöüß]+/g, '-'), name, schnell, zutaten: mitIds(zutaten.map(L.zutatLesen)) });
     return [
       g('Spaghetti Bolognese', ['500 g Spaghetti', '400 g Hackfleisch', '1 Dose passierte Tomaten', '1 Zwiebel', '2 Zehen Knoblauch', '1 Möhre', '50 g Parmesan']),
       g('Pfannkuchen mit Apfelmus', ['250 g Mehl', '500 ml Milch', '3 Eier', '1 Glas Apfelmus'], true),
@@ -40,12 +41,24 @@
     ];
   }
 
+  // Jeder Listeneintrag bekommt eine id, damit der Abgleich zwischen Geräten Einträge zusammenführen kann.
+  function mitIds(zutaten) { return zutaten.filter(Boolean).map((z, i) => ({ id: 'z' + i, ...z })); }
+
   let daten = Familie.laden(SPEICHER, null);
   if (!daten || !Array.isArray(daten.gerichte)) {
     daten = { version: 1, gerichte: startGerichte(), plan: {}, einkauf: {} };
     speichern();
   }
   function speichern() { Familie.speichern(SPEICHER, daten); }
+
+  // Neue Daten von einem anderen Gerät: übernehmen und neu zeichnen.
+  window.addEventListener('familie:aktualisiert', e => {
+    if (e.detail && e.detail.key !== SPEICHER) return;
+    const neu = Familie.laden(SPEICHER, null);
+    if (!neu || !Array.isArray(neu.gerichte)) return;
+    daten = neu;
+    if (!$('#gericht-dialog').open) zeigeAktuell();
+  });
 
   // ---------- Zustand ----------
   let start = L.wochenStart(new Date());
@@ -169,7 +182,8 @@
     e.preventDefault();
     const z = L.zutatLesen($('#extra-eingabe').value);
     if (!z) return;
-    einkaufWoche().extra.push({ ...z, schluessel: 'extra|' + neueId() });
+    const id = neueId();
+    einkaufWoche().extra.push({ id, ...z, schluessel: 'extra|' + id });
     $('#extra-eingabe').value = '';
     speichern(); zeigeEinkauf();
   });
@@ -220,7 +234,7 @@
         id: inBearbeitung ? inBearbeitung.id : neueId(),
         name: f.name.value.trim(),
         schnell: f.schnell.checked,
-        zutaten: f.zutaten.value.split('\n').map(L.zutatLesen).filter(Boolean)
+        zutaten: mitIds(f.zutaten.value.split('\n').map(L.zutatLesen))
       };
       daten.gerichte = daten.gerichte.filter(g => g.id !== neu.id).concat(neu);
     } else if (wert === 'loeschen' && inBearbeitung) {
