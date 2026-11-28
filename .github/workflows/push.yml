@@ -1,0 +1,39 @@
+# Verschickt die Push-Benachrichtigungen der Familien-App (push/senden.js).
+# Braucht zwei Repository-Secrets: FAMILIE_CODE und VAPID_PRIVATE_KEY.
+# GitHub startet geplante Läufe oft ein paar Minuten später, das ist eingeplant.
+name: Push-Benachrichtigungen
+
+on:
+  schedule:
+    # In UTC. Je zwei Läufe decken Winter- und Sommerzeit ab; senden.js entscheidet nach deutscher Uhrzeit
+    # und verschickt jede Runde nur einmal am Tag (gegen 6:30 und 19:30 Uhr).
+    - cron: "30 4,5 * * *"
+    - cron: "30 17,18 * * *"
+  workflow_dispatch:
+    inputs:
+      modus:
+        description: "Was soll verschickt werden?"
+        type: choice
+        options: [test, morgens, abends, auto]
+        default: test
+
+concurrency:
+  group: push
+  cancel-in-progress: false
+
+jobs:
+  senden:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --omit=dev --no-audit --no-fund
+        working-directory: push
+      - run: node push/senden.js "${{ inputs.modus || 'auto' }}"
+        env:
+          TZ: Europe/Berlin
+          FAMILIE_CODE: ${{ secrets.FAMILIE_CODE }}
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}

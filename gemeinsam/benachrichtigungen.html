@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#2f6f62">
+  <title>Benachrichtigungen</title>
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <meta name="apple-mobile-web-app-title" content="Familie">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    [hidden] { display: none !important; }
+    .leise { color: var(--text-leise); font-size: 0.9rem; }
+    .knopf { width: 100%; margin-top: 0.5rem; }
+    .status { font-weight: 600; }
+    label.wahl { display: flex; gap: 0.6rem; align-items: flex-start; margin: 0.6rem 0; }
+    label.wahl input { margin-top: 0.25rem; width: 1.2rem; height: 1.2rem; }
+    select { width: 100%; font: inherit; padding: 0.5rem; border-radius: 8px; border: 1px solid var(--rand); background: var(--karte); color: var(--text); }
+    .vorschau { background: var(--hg); border-radius: 10px; padding: 0.6rem 0.8rem; margin: 0.4rem 0; white-space: pre-line; font-size: 0.92rem; }
+    .vorschau strong { display: block; }
+    ol { padding-left: 1.2rem; } ol li { margin: 0.3rem 0; }
+    .geraet { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; padding: 0.3rem 0; }
+    .geraet button { background: none; border: 0; color: var(--gefahr); font: inherit; cursor: pointer; }
+    .fehler { color: var(--gefahr); }
+  </style>
+</head>
+<body>
+  <header class="kopf">
+    <a href="../index.html" aria-label="Zur Startseite">‹</a>
+    <h1>Benachrichtigungen</h1>
+  </header>
+  <main class="inhalt">
+    <div class="karte">
+      Auf diesem Handy: <span id="status" class="status">…</span>
+      <p class="leise">Die App erinnert dich, auch wenn sie geschlossen ist: morgens an das, was heute ansteht, abends an das, was du für morgen vorbereiten musst. Zum Beispiel, wer morgen Tilda in die Kita oder Benno zum Bus bringt, Sportzeug für Benno (nicht in den Ferien), fällige Aufgaben wie Müll und Geschenke vor Geburtstagen.</p>
+    </div>
+
+    <div id="ohne-sync" class="karte" hidden>
+      <p><strong>Erst Handys verbinden.</strong> Die Erinnerungen werden aus euren gemeinsamen Listen gebaut. Dafür muss dieses Handy mit der Familie verbunden sein.</p>
+      <a class="knopf" href="abgleich.html">Handys verbinden</a>
+    </div>
+
+    <div id="ios-home" class="karte" hidden>
+      <p><strong>Auf dem iPhone geht das nur aus der App auf dem Home-Bildschirm.</strong></p>
+      <ol>
+        <li>In Safari unten auf <strong>Teilen</strong> (□↑) tippen.</li>
+        <li><strong>Zum Home-Bildschirm</strong> wählen und hinzufügen.</li>
+        <li>Die App über das neue Symbol öffnen und hier wieder herkommen (Startseite → Benachrichtigungen).</li>
+      </ol>
+      <p class="leise">Braucht iOS 16.4 oder neuer. Ist das Symbol schon da, bist du gerade in Safari statt in der App.</p>
+    </div>
+
+    <div id="geht-nicht" class="karte" hidden>
+      <p>Dieser Browser kann leider keine Benachrichtigungen empfangen. Auf dem iPhone bitte iOS aktualisieren (ab 16.4) und die App vom Home-Bildschirm öffnen.</p>
+    </div>
+
+    <div id="verboten" class="karte" hidden>
+      <p><strong>Benachrichtigungen sind für die App ausgeschaltet.</strong> Du kannst sie in den Einstellungen wieder erlauben: iPhone: <em>Einstellungen → Mitteilungen → Familie</em>. Android: lange auf das App-Symbol tippen → App-Info → Benachrichtigungen.</p>
+    </div>
+
+    <div id="einstellungen" class="karte" hidden>
+      <label for="person"><strong>Wer nutzt dieses Handy?</strong></label>
+      <select id="person"></select>
+      <p class="leise">Aufgaben, die einer anderen Person zugeteilt sind, kommen dann nicht. Aufgaben ohne Zuständigkeit bekommen alle.</p>
+      <label class="wahl"><input type="checkbox" id="morgens"> <span><strong>Morgens gegen 6:30</strong><br><span class="leise">Was heute ansteht und was noch offen ist</span></span></label>
+      <label class="wahl"><input type="checkbox" id="abends"> <span><strong>Abends gegen 19:30</strong><br><span class="leise">Was du für morgen vorbereiten musst</span></span></label>
+      <button class="knopf" id="ein">Benachrichtigungen einschalten</button>
+      <button class="knopf zweit" id="probe" hidden>Probe auf diesem Handy</button>
+      <button class="knopf zweit" id="aus" hidden>Auf diesem Handy ausschalten</button>
+      <p id="meldung" class="leise"></p>
+    </div>
+
+    <div class="karte">
+      <strong>So sähe es heute aus</strong>
+      <div id="vorschau"></div>
+      <p class="leise">Ist an einem Tag nichts los, kommt auch keine Nachricht.</p>
+    </div>
+
+    <div id="geraete-karte" class="karte" hidden>
+      <strong>Eingeschaltete Handys</strong>
+      <div id="geraete"></div>
+    </div>
+  </main>
+
+  <script src="familie.js"></script>
+  <script src="sync-firebase.js"></script>
+  <script src="sync.js"></script>
+  <script src="../aufgaben/aufgaben-daten.js"></script>
+  <script src="../heute/heute-logik.js"></script>
+  <script src="../bringen/logik.js"></script>
+  <script src="../push/nachrichten.js"></script>
+  <script src="push.js"></script>
+  <script>
+    (function () {
+      var P = window.FamiliePush;
+      var $ = function (id) { return document.getElementById(id); };
+
+      function meldung(text, fehler) { $("meldung").textContent = text || ""; $("meldung").className = fehler ? "fehler" : "leise"; }
+
+      function personenAuswahl(gewaehlt) {
+        var s = $("person");
+        s.innerHTML = "";
+        var o = document.createElement("option"); o.value = ""; o.textContent = "Alle Aufgaben"; s.appendChild(o);
+        Familie.personen().forEach(function (p) {
+          var e = document.createElement("option"); e.value = p.id; e.textContent = p.name; s.appendChild(e);
+        });
+        s.value = gewaehlt || "";
+      }
+
+      function einstellungen() {
+        return { personId: $("person").value || null, morgens: $("morgens").checked, abends: $("abends").checked };
+      }
+
+      function vorschau() {
+        var box = $("vorschau");
+        box.innerHTML = "";
+        var g = einstellungen();
+        var heute = Familie.heute();
+        [["morgens", heute], ["abends", heute]].forEach(function (m) {
+          var n = PushNachrichten.bauen(m[0], m[1], g);
+          var d = document.createElement("div"); d.className = "vorschau";
+          var t = document.createElement("strong");
+          t.textContent = (m[0] === "morgens" ? "Morgens: " : "Abends: ") + (n ? n.titel : "nichts");
+          d.appendChild(t);
+          if (n) d.appendChild(document.createTextNode(n.text));
+          box.appendChild(d);
+        });
+      }
+
+      function geraeteListe() {
+        var liste = P.geraete();
+        $("geraete-karte").hidden = !liste.length;
+        var box = $("geraete");
+        box.innerHTML = "";
+        liste.forEach(function (g) {
+          var z = document.createElement("div"); z.className = "geraet";
+          var n = document.createElement("span");
+          n.textContent = g.name + (g.id === P.geraetId() ? " · dieses Handy" : "") +
+            (g.morgens === false && g.abends === false ? " · stumm" : "");
+          var b = document.createElement("button"); b.textContent = "Entfernen";
+          b.onclick = function () {
+            if (!confirm(g.name + " bekommt dann keine Erinnerungen mehr. Entfernen?")) return;
+            (g.id === P.geraetId() ? P.ausschalten() : Promise.resolve(P.entfernen(g.id))).then(zeigen);
+          };
+          z.appendChild(n); z.appendChild(b); box.appendChild(z);
+        });
+      }
+
+      function zeigen() {
+        var g = P.eintrag();
+        var sync = !!FamilieSync.konfig();
+        var iosOhneHome = P.istIos() && !P.homeBildschirm();
+        var geht = P.unterstuetzt();
+        var verboten = P.erlaubnis() === "denied";
+        $("ohne-sync").hidden = sync;
+        $("ios-home").hidden = !sync || !iosOhneHome;
+        $("geht-nicht").hidden = !sync || iosOhneHome || geht;
+        $("verboten").hidden = !sync || !geht || !verboten;
+        $("einstellungen").hidden = !sync || iosOhneHome || !geht;
+        var an = !!(g && g.abo && P.erlaubnis() === "granted");
+        $("status").textContent = an ? "✓ eingeschaltet" : "aus";
+        $("ein").textContent = an ? "Speichern" : "Benachrichtigungen einschalten";
+        $("aus").hidden = !an;
+        $("probe").hidden = !an;
+        personenAuswahl(g ? g.personId : $("person").value);
+        $("morgens").checked = g ? g.morgens !== false : true;
+        $("abends").checked = g ? g.abends !== false : true;
+        vorschau();
+        geraeteListe();
+      }
+
+      $("ein").addEventListener("click", function () {
+        var e = einstellungen();
+        var g = P.eintrag();
+        meldung("Einen Moment …");
+        var schritt = g && g.abo && P.erlaubnis() === "granted" ? Promise.resolve(P.eintragSetzen(e)) : P.einschalten(e);
+        schritt.then(function () { meldung("✓ Gespeichert. Die erste Erinnerung kommt zur nächsten Uhrzeit, wenn etwas ansteht."); zeigen(); },
+          function (f) { meldung(f.message, true); zeigen(); });
+      });
+      $("aus").addEventListener("click", function () { P.ausschalten().then(function () { meldung("Ausgeschaltet."); zeigen(); }); });
+      $("probe").addEventListener("click", function () { P.probe().catch(function (f) { meldung(f.message, true); }); });
+      ["person", "morgens", "abends"].forEach(function (id) { $(id).addEventListener("change", vorschau); });
+      window.addEventListener("familie:aktualisiert", zeigen);
+
+      zeigen();
+      P.pruefen().then(zeigen);
+    })();
+  </script>
+</body>
+</html>
