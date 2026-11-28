@@ -10,6 +10,8 @@ Kleine Web-App, die den Mental Load in der Familie verringern soll: Dinge, an di
 
 - **Schule & Kita** (`kinder/`): pro Kind Nachrichten aus Schul- und Kita-App einfügen (Text oder per Live Text aus einem Screenshot). `kinder/logik.js` findet Daten, Uhrzeiten und „mitbringen/abgeben“ und schlägt Termine und Aufgaben vor, die nach dem Bestätigen als Aufgaben (Kategorie „Schule & Kita“) gespeichert werden und so auch in der Woche erscheinen. Key `familie.kinder.v1`. Tests: `node --test kinder/logik.test.js`.
 
+- **Bring-Plan** (`bringen/`): wer morgens Tilda in die Kita und Benno zur Bushaltestelle bringt. Regelplan je Wochentag, einzelne Tage tauscht man mit einem Tipp auf den Namen (bei zwei Personen ein Tausch, mit Opa reihum), ✕ = fällt aus. Der Bus entfällt in den Schulferien (`HeuteLogik.FERIEN`). Die Heute-Karte zeigt morgens den heutigen Plan, ab 10 Uhr schon den nächsten Bring-Tag. Key `familie.bringen.v1`, `Bringen.termineZwischen(von, bis)` für Wochenansichten. Tests: `node --test bringen/logik.test.js`.
+
 - **Geburtstage & Geschenke** (`geburtstage/`): Geburtstage, Jahrestage und andere Anlässe mit einer Ideenliste pro Anlass. Gekaufte Ideen erscheinen nach dem Anlass unter „Früher geschenkt“. Pro Anlass entsteht eine jährliche Aufgabe „Geschenk für …“, die rechtzeitig vorher fällig wird und sich abhakt, sobald ein Geschenk als gekauft markiert ist. Tests: `node --test geburtstage/geburtstage.test.js`.
 
 - **Woche** (`kalender/`): Wochenansicht mit Google-Kalender-Terminen (nur lesen, jede Person meldet sich auf ihrem Handy mit Google an), Aufgaben und Essen. Termine aus dem Abfallkalender werden automatisch zur Aufgabe „Tonne rausstellen“ am Vorabend. Braucht eine OAuth-Client-ID in `kalender/google.js`.
