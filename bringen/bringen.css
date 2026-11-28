@@ -1,0 +1,54 @@
+/* Bring-Plan – nutzt die Variablen aus gemeinsam/style.css */
+.kopf-knopf { border: 1px solid rgb(255 255 255 / .5); background: none; color: inherit; font: inherit; font-size: .9rem; padding: 6px 12px; border-radius: 999px; cursor: pointer; }
+.erklaerung { color: var(--text-leise); font-size: .92rem; }
+.leise { color: var(--text-leise); }
+.klein { font-size: .82rem; margin: 4px 0 0; }
+
+.b-karte { padding: .6rem 1rem; }
+.b-karte.heute { border-left: 4px solid var(--akzent); }
+.b-karte.vorbei { opacity: .5; }
+.b-tag { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 2px; font-size: 1rem; }
+.b-tag span { font-weight: 400; font-size: .85rem; color: var(--text-leise); }
+.b-frei { margin: 4px 0; font-size: .9rem; }
+
+.b-zeile { display: flex; align-items: center; gap: .5rem; min-height: 48px; border-top: 1px solid var(--rand); }
+.b-zeile:first-of-type { border-top: 0; }
+.b-symbol { flex: none; width: 1.8rem; text-align: center; font-size: 1.15rem; }
+.b-weg { flex: 1; min-width: 0; font-size: .95rem; }
+.b-weg small { color: var(--text-leise); font-variant-numeric: tabular-nums; }
+.b-tausch {
+  display: inline-flex; align-items: center; gap: .35rem; min-height: 40px; padding: 4px 10px 4px 12px;
+  border: 1px solid var(--rand); border-radius: 999px; background: var(--karte); color: var(--text);
+  font: inherit; font-weight: 600; cursor: pointer; white-space: nowrap;
+}
+.b-tausch:disabled { cursor: default; }
+.b-tausch.getauscht { border-color: var(--akzent); box-shadow: inset 0 0 0 1px var(--akzent); }
+.b-tausch:not(:disabled):active { background: var(--akzent); color: var(--akzent-text); }
+.b-pfeil { color: var(--text-leise); font-weight: 400; }
+.b-person { display: inline-flex; align-items: center; }
+.b-punkt { display: inline-block; width: .65rem; height: .65rem; border-radius: 50%; margin-right: .35rem; flex: none; }
+.b-aus { flex: none; width: 36px; height: 36px; border: 0; border-radius: 50%; background: none; color: var(--text-leise); font: inherit; cursor: pointer; }
+.b-zeile.ausfall .b-weg { text-decoration: line-through; color: var(--text-leise); }
+.b-zeile.ausfall .b-tausch { font-weight: 400; color: var(--text-leise); }
+.b-link { border: 0; background: none; padding: 0; font: inherit; color: var(--akzent); text-decoration: underline; cursor: pointer; }
+
+dialog { border: 0; border-radius: var(--radius); padding: 16px; width: min(520px, 94vw); max-height: 90vh; background: var(--karte); color: var(--text); }
+dialog::backdrop { background: rgb(0 0 0 / .35); }
+dialog h2 { margin-top: 0; text-transform: none; letter-spacing: 0; color: var(--text); font-size: 1.15rem; }
+dialog h3 { font-size: .95rem; margin: 14px 0 6px; }
+.b-regel { border: 1px solid var(--rand); border-radius: 10px; margin: 10px 0; padding: 8px 12px 12px; }
+.b-regel legend { font-weight: 600; padding: 0 4px; }
+.b-checks { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; font-size: .9rem; }
+.b-check { display: inline-flex; align-items: center; gap: 6px; margin: 0; color: var(--text); font-size: .95rem; }
+.b-check input { width: 20px; min-height: 20px; height: 20px; }
+.b-regel-tage { margin-top: 8px; }
+.b-regel-tag { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; padding: 4px 0; }
+.b-regel-name { width: 2rem; font-size: .85rem; color: var(--text-leise); }
+.b-wahl { display: inline-flex; align-items: center; min-height: 36px; padding: 4px 10px; border: 1px solid var(--rand); border-radius: 999px; background: none; color: var(--text); font: inherit; font-size: .9rem; cursor: pointer; }
+.b-wahl.an { background: var(--akzent); border-color: var(--akzent); color: var(--akzent-text); font-weight: 600; }
+.b-zeit { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+.b-zeit input { width: 8rem; }
+.b-chip { display: inline-flex; align-items: center; margin: 0 6px 6px 0; font-size: .9rem; }
+.person-neu { display: flex; gap: 8px; }
+.aktionen { display: flex; justify-content: flex-end; margin-top: 14px; }
+.hinweis { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--text); color: var(--karte); padding: 10px 16px; border-radius: 999px; z-index: 10; white-space: nowrap; }

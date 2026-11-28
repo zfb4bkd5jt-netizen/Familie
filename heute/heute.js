@@ -2,6 +2,7 @@
  * Heute-Ansicht auf der Startseite: Hinweise (z. B. Sport), Termine aus Google,
  * fällige Aufgaben und das Essen des Tages auf einen Blick.
  * Braucht familie.js, aufgaben-daten.js, kalender/google.js und heute-logik.js.
+ * Optional bringen/logik.js + bringen-daten.js für den Bring-Plan.
  */
 (function () {
   "use strict";
@@ -106,8 +107,30 @@
       anzahl++;
     });
 
-    // Termine
+    // Bring-Plan: morgens für heute, ab 10 Uhr schon für den nächsten Bring-Tag
     var jetzt = jetztHHMM();
+    if (window.Bringen) {
+      var B = window.BringLogik;
+      var bplan = Bringen.laden();
+      var btag = B.anzeigeTag(bplan, heute, jetzt, Bringen.inFerien);
+      if (btag) {
+        var bd = Familie.ausIso(btag.iso);
+        var vorsatz = btag.heute ? "" : btag.morgen ? "Morgen: " : TAGE[bd.getDay()] + ": ";
+        B.tag(bplan, btag.iso, Bringen.inFerien).forEach(function (e) {
+          var p = e.personId ? Familie.person(e.personId) : null;
+          var knopf = e.ausfall ? el("span", { class: "chip", text: "fällt aus" }) : el("button", {
+            class: "h-tausch" + (e.getauscht ? " getauscht" : ""),
+            "aria-label": vorsatz + e.weg.titel + ": " + (p ? p.name : "noch niemand") + ". Tippen zum Tauschen",
+            onclick: function () { Bringen.tauschen(e.weg.id, btag.iso); zeichnen(); }
+          }, [p ? el("span", { class: "h-punkt", style: "background:" + p.farbe }) : null, p ? p.name : "Wer?", el("span", { class: "h-pfeil", text: "⇄" })]);
+          liste.appendChild(zeile(e.weg.symbol, el("a", { href: "bringen/", text: vorsatz + e.weg.titel }),
+            e.weg.uhrzeit ? [el("span", { class: "h-kal", text: e.weg.uhrzeit })] : [], "bringen" + (e.ausfall ? " fertig" : ""), knopf));
+          anzahl++;
+        });
+      }
+    }
+
+    // Termine
     L.termine(googleTermine, heute).forEach(function (t) {
       var vorbei = t.uhrzeit && t.uhrzeit < jetzt;
       liste.appendChild(zeile(el("span", { class: "h-zeit", text: t.uhrzeit || "ganzt." }),
