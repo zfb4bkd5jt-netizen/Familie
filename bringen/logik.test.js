@@ -87,7 +87,9 @@ test("Heute-Karte: morgens heute, später der nächste Bring-Tag", () => {
   assert.deepStrictEqual(B.anzeigeTag(p, "2026-11-30", "07:10"), { iso: "2026-11-30", heute: true });
   assert.strictEqual(B.anzeigeTag(p, "2026-11-30", "18:00").iso, "2026-12-01");
   assert.ok(B.anzeigeTag(p, "2026-11-30", "18:00").morgen);
-  assert.strictEqual(B.anzeigeTag(p, "2026-11-27", "18:00").iso, "2026-11-30");   // Fr abends -> Mo
+  assert.strictEqual(B.anzeigeTag(p, "2026-11-27", "18:00"), null);              // Fr abends: Wochenende
+  assert.strictEqual(B.anzeigeTag(p, "2026-11-28", "10:02"), null);              // Sa: nichts
+  assert.strictEqual(B.anzeigeTag(p, "2026-11-29", "18:00").iso, "2026-11-30");   // So -> Mo
 });
 
 test("Montag der Woche", () => {

@@ -151,13 +151,12 @@
     else plan.tage[k] = AUSFALL;
   }
 
-  /* Was zeigt die Heute-Karte? Morgens den heutigen Tag, ab "umschalten" (Standard 10:00) den nächsten Bring-Tag. */
+  /* Was zeigt die Heute-Karte? Morgens den heutigen Tag, ab "umschalten" (Standard 10:00) den morgigen, falls morgen gebracht wird. */
   function anzeigeTag(plan, heute, jetztHHMM, inFerien, umschalten) {
     if (jetztHHMM < (umschalten || "10:00") && tag(plan, heute, inFerien).length) return { iso: heute, heute: true };
-    for (var n = 1; n <= 7; n++) {
-      var iso = plusTage(heute, n);
-      if (tag(plan, iso, inFerien).length) return { iso: iso, heute: false, morgen: n === 1 };
-    }
+    // Nur morgen, nicht weiter: Samstag zeigt nichts, Sonntag schon den Montag
+    var morgen = plusTage(heute, 1);
+    if (tag(plan, morgen, inFerien).length) return { iso: morgen, heute: false, morgen: true };
     return null;
   }
 
