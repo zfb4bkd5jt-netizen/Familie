@@ -56,3 +56,22 @@ test("Versandzeiten", () => {
   assert.equal(modusFuer(19), "abends");
   assert.equal(modusFuer(22), null);
 });
+
+test("Bring-Plan: eigene Wege mit Du, ohne Person alle, Ausfall nicht", () => {
+  const bringen = { version: 1, wege: [
+    { id: "tilda-kita", titel: "Tilda in die Kita", symbol: "🧸", uhrzeit: "7:45", schule: false, kandidaten: [], regel: { "1": "p-matthias" } },
+    { id: "benno-bus", titel: "Benno zur Bushaltestelle", symbol: "🚌", uhrzeit: "", schule: true, kandidaten: [], regel: { "1": "p-maike" } }],
+    tage: {} };
+  const personen = [{ id: "p-matthias", name: "Matthias" }, { id: "p-maike", name: "Maike" }];
+  const d = { "familie.push.v1": [papa, { id: "g3", name: "Familie", abo }], "familie.bringen.v1": bringen, "familie.personen": personen };
+  const plan = planen(d, "abends", "2026-11-29");   // Sonntag -> Montag
+  assert.deepEqual(plan[0].nachricht.text.split("\n"), ["🧸 Du bringst Tilda in die Kita (7:45)", "🎽 Benno hat Sport: Sportzeug einpacken"]);
+  assert.deepEqual(plan[1].nachricht.text.split("\n").slice(0, 2), ["🧸 Matthias bringt Tilda in die Kita (7:45)", "🚌 Maike bringt Benno zur Bushaltestelle"]);
+  bringen.tage["2026-11-30|tilda-kita"] = "p-maike";
+  bringen.tage["2026-11-30|benno-bus"] = "-";
+  const getauscht = planen(d, "morgens", "2026-11-30");
+  assert.equal(getauscht[1].nachricht.text.split("\n")[0], "🧸 Maike bringt Tilda in die Kita (7:45), getauscht");
+  assert.ok(!getauscht[0].nachricht.text.includes("bringst"));
+  // Ferien: kein Bus
+  assert.ok(!planen(d, "morgens", "2026-12-28")[1].nachricht.text.includes("Bus"));
+});

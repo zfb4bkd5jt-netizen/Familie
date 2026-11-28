@@ -1,11 +1,11 @@
 /*
  * Inhalt der Push-Benachrichtigungen: reine Logik ohne DOM.
- * Klassisches Script, braucht familie.js, aufgaben-daten.js und heute-logik.js.
+ * Klassisches Script, braucht familie.js, aufgaben-daten.js und heute-logik.js (bringen/logik.js optional).
  * Stellt global `PushNachrichten` bereit. Läuft im Browser und auf dem Server (push/senden.js).
  *
  * Modi:
- *   morgens: was heute ansteht (Hinweise wie Sport, überfällige und heute fällige Aufgaben)
- *   abends:  Vorschau auf morgen (Sportzeug einpacken, morgen fällige Aufgaben)
+ *   morgens: was heute ansteht (Bring-Plan, Hinweise wie Sport, überfällige und heute fällige Aufgaben)
+ *   abends:  Vorschau auf morgen (wer bringt, Sportzeug einpacken, morgen fällige Aufgaben)
  *
  * Gerät: { id, personId, morgens, abends } aus "familie.push.v1".
  * Aufgaben mit personId gehen nur an Geräte dieser Person (oder ohne Person). Aufgaben ohne personId an alle.
@@ -32,12 +32,29 @@
     return (Aufgaben.KATEGORIEN[a.kategorie] || { symbol: "📌" }).symbol;
   }
 
+  /* Bring-Plan: wer bringt Tilda / Benno? Mit Person am Gerät nur die eigenen Wege ("Du bringst …"). */
+  function bringZeilen(tag, geraet) {
+    var plan = Familie.laden("familie.bringen.v1", null);
+    if (!global.BringLogik || !plan || !Array.isArray(plan.wege)) return [];
+    if (!plan.tage) plan.tage = {};
+    var eigene = geraet && geraet.personId;
+    return BringLogik.tag(plan, tag, HeuteLogik.inFerien).filter(function (e) {
+      return !e.ausfall && e.personId && (!eigene || e.personId === eigene);
+    }).map(function (e) {
+      var p = Familie.person(e.personId);
+      var wer = eigene ? "Du bringst " : (p ? p.name : "?") + " bringt ";
+      return (e.weg.symbol || "🚸") + " " + wer + e.weg.titel + (e.weg.uhrzeit ? " (" + e.weg.uhrzeit + ")" : "") + (e.getauscht ? ", getauscht" : "");
+    });
+  }
+
   /* Nachricht für ein Gerät, oder null, wenn nichts ansteht.
      -> { titel, text, url, tag } */
   function bauen(modus, heuteIso, geraet) {
     var zeilen = [];
     var tag = modus === "abends" ? plusTage(heuteIso, 1) : heuteIso;
     var abgehakt = Familie.laden("familie.heute.abgehakt", {}) || {};
+
+    bringZeilen(tag, geraet).forEach(function (z) { zeilen.push(z); });
 
     HeuteLogik.hinweise(tag).forEach(function (h) {
       if (abgehakt[tag + "|" + h.id]) return;

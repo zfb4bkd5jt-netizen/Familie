@@ -40,7 +40,7 @@ function umgebung(daten) {
   const ctx = { localStorage, Date, Math, JSON, String, Number, Array, Object, RegExp, parseInt, console };
   ctx.window = ctx;
   vm.createContext(ctx);
-  for (const f of ["gemeinsam/familie.js", "aufgaben/aufgaben-daten.js", "heute/heute-logik.js", "push/nachrichten.js"]) {
+  for (const f of ["gemeinsam/familie.js", "aufgaben/aufgaben-daten.js", "heute/heute-logik.js", "bringen/logik.js", "push/nachrichten.js"]) {
     vm.runInContext(fs.readFileSync(path.join(__dirname, "..", f), "utf8"), ctx, { filename: f });
   }
   return ctx;
