@@ -1,0 +1,8 @@
+{
+  "name": "familie-push",
+  "private": true,
+  "description": "Versand der Push-Benachrichtigungen (läuft in GitHub Actions, siehe .github/workflows/push.yml)",
+  "dependencies": {
+    "web-push": "3.6.7"
+  }
+}
