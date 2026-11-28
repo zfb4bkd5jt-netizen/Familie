@@ -173,7 +173,9 @@
     if (G && G.eingerichtet() && !G.angemeldet()) {
       box.appendChild(el("p", { class: "h-fuss" }, [
         G.warAngemeldet() ? "Google-Anmeldung abgelaufen. " : "Termine aus Google Kalender fehlen noch. ",
-        el("button", { class: "h-link", text: G.warAngemeldet() ? "Neu anmelden" : "Verbinden", onclick: anmelden })
+        el("button", { class: "h-link", text: G.warAngemeldet() ? "Neu anmelden" : "Verbinden", onclick: anmelden }),
+        " oder ",
+        el("a", { class: "h-link", href: "kalender/skript.html", text: "dauerhaft verbinden" })
       ]));
     } else if (googleStand === "fehler") {
       box.appendChild(el("p", { class: "h-fuss", text: "Termine gerade nicht erreichbar, zeige den letzten Stand." }));
