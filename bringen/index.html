@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#2f6f62">
+  <title>Bring-Plan · Familie</title>
+  <link rel="icon" href="../gemeinsam/logo.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../gemeinsam/icons/apple-touch-icon.png">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <meta name="apple-mobile-web-app-title" content="Familie">
+  <link rel="stylesheet" href="../gemeinsam/style.css">
+  <link rel="stylesheet" href="bringen.css">
+</head>
+<body>
+  <header class="kopf">
+    <a href="../index.html" aria-label="Zur Startseite">‹</a>
+    <h1>Bring-Plan</h1>
+    <button class="kopf-knopf" id="regel-oeffnen">Regelplan</button>
+  </header>
+
+  <main class="inhalt">
+    <p class="karte erklaerung">Wer bringt morgens Tilda in die Kita und Benno zum Bus? Tipp auf den Namen, dann übernimmt die andere Person, nur an diesem Tag.</p>
+    <div id="wochen"></div>
+  </main>
+
+  <dialog id="regel-dialog">
+    <form method="dialog" id="regel-form">
+      <h2>Regelplan</h2>
+      <p class="leise">So ist es normalerweise. Einzelne Tage tauscht ihr direkt im Plan.</p>
+      <div id="regel-wege"></div>
+      <h3>Personen</h3>
+      <div id="personen"></div>
+      <div class="person-neu">
+        <input id="person-name" placeholder="z. B. Opa Eddy" autocomplete="off" aria-label="Neue Person">
+        <button class="knopf zweit" type="button" id="person-hinzu">Hinzufügen</button>
+      </div>
+      <div class="aktionen">
+        <button class="knopf" value="fertig">Fertig</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="../gemeinsam/familie.js"></script>
+  <script src="../gemeinsam/sync-firebase.js"></script>
+  <script src="../gemeinsam/sync.js"></script>
+  <script src="../heute/heute-logik.js"></script>
+  <script src="logik.js"></script>
+  <script src="bringen-daten.js"></script>
+  <script src="bringen.js"></script>
+</body>
+</html>
