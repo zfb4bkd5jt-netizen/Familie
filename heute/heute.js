@@ -107,7 +107,7 @@
       anzahl++;
     });
 
-    // Bring-Plan: morgens für heute, ab 10 Uhr schon für den nächsten Bring-Tag
+    // Bring-Plan: morgens für heute, ab 10 Uhr schon für morgen (am Samstag nichts)
     var jetzt = jetztHHMM();
     if (window.Bringen) {
       var B = window.BringLogik;
