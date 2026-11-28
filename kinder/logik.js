@@ -12,7 +12,7 @@
   const WOCHENTAGE = { sonntag: 0, montag: 1, dienstag: 2, mittwoch: 3, donnerstag: 4, freitag: 5, samstag: 6, sonnabend: 6 };
 
   // Woran man erkennt, dass etwas zu tun ist (statt nur ein Termin)
-  const TUN = /mitbring|mitgeb|mitnehm|mitzubring|mitzugeb|abgeb|abzugeb|einreich|ausfüll|ausfuell|unterschreib|unterschrift|zurückgeb|zurueckgeb|anmeld|bezahl|überweis|ueberweis|einsammel|\bgeld\b|euro|€|bitte denk|nicht vergessen|denken sie|denkt an/i;
+  const TUN = /\bgeben\b.*\bab\b|abhol|versehen|gepackt|einpack|mitbring|mitgeb|mitnehm|mitzubring|mitzugeb|abgeb|abzugeb|einreich|ausfüll|ausfuell|unterschreib|unterschrift|zurückgeb|zurueckgeb|anmeld|bezahl|überweis|ueberweis|einsammel|\bgeld\b|euro|€|bitte denk|nicht vergessen|denken sie|denkt an/i;
 
   function iso(j, m, t) {
     return j + '-' + String(m).padStart(2, '0') + '-' + String(t).padStart(2, '0');
@@ -90,13 +90,16 @@
     return treffer.sort((a, b) => a.von - b.von);
   }
 
-  /* "um 15 Uhr", "15:30 Uhr", "15.30 Uhr", "von 9 bis 12 Uhr" -> "15:30" */
+  const ZEIT = /\b(?:um|ab|von)?\s*(\d{1,2})(?:[:.](\d{2}))?\s*(?:Uhr\s*)?(?:(?:-|–|bis)\s*(\d{1,2})(?:[:.](\d{2}))?\s*)?Uhr\b/i;
+
+  /* "um 15 Uhr" -> "15:00", "15.30 Uhr" -> "15:30", "von 10:00 Uhr bis 11:30 Uhr" -> "10:00–11:30" */
   function uhrzeitFinden(text) {
-    const m = /\b(?:um|ab|von)?\s*(\d{1,2})(?:[:.](\d{2}))?\s*(?:-|–|bis)?\s*(?:\d{1,2}(?:[:.]\d{2})?\s*)?Uhr\b/i.exec(text);
+    const m = ZEIT.exec(text);
     if (!m) return null;
     const h = Number(m[1]);
     if (h > 23) return null;
-    return h + ':' + (m[2] || '00');
+    const von = h + ':' + (m[2] || '00');
+    return m[3] && Number(m[3]) <= 23 ? von + '–' + Number(m[3]) + ':' + (m[4] || '00') : von;
   }
 
   /* Text in Sätze bzw. Zeilen teilen. Datumspunkte ("5.12.") trennen nicht. */
@@ -120,19 +123,25 @@
      "Am Donnerstag, 03.12., findet um 19:30 Uhr der Elternabend in der Aula statt" -> "Elternabend in der Aula" */
   function titelAus(satz, d) {
     let s = satz;
-    if (d) s = s.slice(0, d.von) + ' ' + s.slice(d.bis);
     const tage = Object.keys(WOCHENTAGE).join('|');
+    if (d) {
+      // Datum samt "am Samstag, den" davor entfernen
+      const vor = s.slice(0, d.von).replace(new RegExp('(?:[\\s,]*\\b(?:am|den|bis zum|bis|zum|vom|ab dem|ab|' + tage + ')\\b)+[\\s,]*$', 'i'), ' ');
+      s = vor + ' ' + s.slice(d.bis).replace(/^\s*,/, '');
+    }
     s = s.replace(new RegExp('\\b(am|bis|ab|diesen|nächsten|naechsten|kommenden)?\\s*(' + tage + ')\\b,?', 'gi'), ' ')
-      .replace(/\b(um|ab|von)?\s*\d{1,2}([:.]\d{2})?\s*((-|–|bis)\s*\d{1,2}([:.]\d{2})?\s*)?Uhr\b/gi, ' ')
+      .replace(new RegExp(ZEIT.source, 'gi'), ' ')
+      .replace(/\bin der Zeit\b/gi, ' ')
       .replace(/^\s*(am|bis|ab|den)\b\s*,?/i, ' ')
       .replace(/\s+,/g, ',').replace(/\s{2,}/g, ' ').replace(/^[\s,]+/, '');
     // "findet ... der Elternabend ... statt"
     s = s.replace(/^(findet|ist)\s+(der|die|das|unser|unsere)?\s*(.+?)\s+statt\b/i, '$3')
-      .replace(/^(.+?)\s+findet\s+(.*?)\s*statt\b/i, '$1 $2')
+      .replace(/^(.+?)\s+findet\s+(.*?)\s*,?\s*statt\b/i, '$1 $2')
       .replace(/^(machen|haben|feiern|gehen|fahren|besuchen)\s+wir\s+(unseren|unsere|unser|einen|eine|ein|den|die|das)?\s*/i, '')
       .replace(/^(bitte\s+)?(geben sie|gebt)\s+(ihrem|eurem|ihren|euren)\s+(kind|kindern)\s+(.+?)\s+mit\b/i, '$5 mitgeben')
       .replace(/^bitte\s+/i, '')
-      .replace(/^(der|die|das)\s+/i, '');
+      .replace(/^(der|die|das)\s+/i, '')
+      .replace(/\s+([,.!])/g, '$1').replace(/[\s,]+$/, '');
     return kuerzen(s.trim() || satz, 70);
   }
 
@@ -146,9 +155,10 @@
       const daten = datenFinden(satz, heute);
       const tun = TUN.test(satz);
       if (daten.length) letztesDatum = daten[daten.length - 1].datum;
-      if (!daten.length && !tun) return;
-      const art = tun ? 'aufgabe' : 'termin';
       const uhrzeit = uhrzeitFinden(satz);
+      // Satz nur mit Uhrzeit ("Abholung von 17 bis 19 Uhr") gehört zum Datum davor
+      if (!daten.length && !tun && !(uhrzeit && letztesDatum)) return;
+      const art = tun ? 'aufgabe' : 'termin';
       if (daten.length > 1) {
         // "am 24.12. und 31.12. geschlossen": je Datum ein Eintrag, Satz bleibt lesbar
         const titel = kuerzen(satz.replace(/^(die|der|das)\s+/i, ''), 70);

@@ -21,7 +21,7 @@ test('Datum finden', () => {
 test('Uhrzeit finden', () => {
   assert.equal(L.uhrzeitFinden('um 19:30 Uhr in der Aula'), '19:30');
   assert.equal(L.uhrzeitFinden('ab 15 Uhr'), '15:00');
-  assert.equal(L.uhrzeitFinden('von 9 bis 12 Uhr'), '9:00');
+  assert.equal(L.uhrzeitFinden('von 9 bis 12 Uhr'), '9:00–12:00');
   assert.equal(L.uhrzeitFinden('ohne Zeit'), null);
 });
 
@@ -52,4 +52,20 @@ test('Ohne Datum und ohne Aufgabe kommt nichts', () => {
   assert.deepEqual(L.vorschlaege('Heute war ein schöner Tag im Wald. Alle hatten Spaß', HEUTE), []);
   assert.equal(L.vorschlaege('Heute bitte Hausschuhe mitbringen', HEUTE)[0].datum, HEUTE);
   assert.deepEqual(L.vorschlaege('', HEUTE), []);
+});
+
+test('Elternbrief Förderverein (Foto)', () => {
+  const text = `Der Advent „Auf der Burg" findet am Samstag, den 28.11.2026, statt.
+Die Abgabe der Kuchen ist am 28.11.2026 in der Zeit von 10:00 Uhr bis 11:30 Uhr im Bürgerhaus Niederschelden.
+Wichtig ist, dass die Kuchenboxen mit dem Namen versehen werden.
+Die Abholung der Kuchenboxen muss ebenfalls im Bürgerhaus von 17:00 Uhr bis 19:00 Uhr erfolgen.
+Bitte geben Sie den unteren Abschnitt bis zum 20.11.2026 bei der Klassenlehrerin ab.`;
+  const v = L.vorschlaege(text, '2026-11-15');
+  assert.deepEqual(v.map(x => [x.art, x.datum, x.uhrzeit, x.titel]), [
+    ['termin', '2026-11-28', null, 'Advent „Auf der Burg"'],
+    ['termin', '2026-11-28', '10:00–11:30', 'Abgabe der Kuchen ist im Bürgerhaus Niederschelden'],
+    ['aufgabe', '2026-11-28', null, 'Wichtig ist, dass die Kuchenboxen mit dem Namen versehen werden'],
+    ['aufgabe', '2026-11-28', '17:00–19:00', 'Abholung der Kuchenboxen muss ebenfalls im Bürgerhaus erfolgen'],
+    ['aufgabe', '2026-11-20', null, 'Geben Sie den unteren Abschnitt bei der Klassenlehrerin ab']
+  ]);
 });
