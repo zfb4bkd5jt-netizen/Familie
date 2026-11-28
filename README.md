@@ -14,7 +14,7 @@ Kleine Web-App, die den Mental Load in der Familie verringern soll: Dinge, an di
 
 - **Geburtstage & Geschenke** (`geburtstage/`): Geburtstage, Jahrestage und andere Anlässe mit einer Ideenliste pro Anlass. Gekaufte Ideen erscheinen nach dem Anlass unter „Früher geschenkt“. Pro Anlass entsteht eine jährliche Aufgabe „Geschenk für …“, die rechtzeitig vorher fällig wird und sich abhakt, sobald ein Geschenk als gekauft markiert ist. Tests: `node --test geburtstage/geburtstage.test.js`.
 
-- **Woche** (`kalender/`): Wochenansicht mit Google-Kalender-Terminen (nur lesen, jede Person meldet sich auf ihrem Handy mit Google an), Aufgaben und Essen. Termine aus dem Abfallkalender werden automatisch zur Aufgabe „Tonne rausstellen“ am Vorabend. Braucht eine OAuth-Client-ID in `kalender/google.js`.
+- **Woche** (`kalender/`): Wochenansicht mit Google-Kalender-Terminen (nur lesen, jede Person meldet sich auf ihrem Handy mit Google an), Aufgaben und Essen. Termine aus dem Abfallkalender werden automatisch zur Aufgabe „Tonne rausstellen“ am Vorabend. Braucht eine OAuth-Client-ID in `kalender/google.js`. Weil Google reinen Web-Apps nur eine Stunde Zugriff gibt, lässt sich stattdessen ein kleines Google-Apps-Skript im eigenen Konto einrichten (`kalender/skript.html`, Anleitung und Code dort). Dessen Adresse und geheimer Schlüssel werden unter `familie.kalender.skript` mit allen Handys geteilt, dann braucht niemand mehr eine Anmeldung.
 
 - **Heute** (`heute/`, auf der Startseite): Hinweise wie „Benno hat Sport“ (Mo + Do, nicht in den Ferien), heutige Google-Termine, überfällige und heute fällige Aufgaben zum Abhaken und das Essen des Tages. Feste Hinweise und Ferien stehen in `heute/heute-logik.js`. Tests: `node --test heute/heute-logik.test.js`.
 

@@ -148,7 +148,8 @@
     if (!G.angemeldet()) {
       box.appendChild(el("div", { class: "karte anmelden" }, [
         el("span", { text: G.warAngemeldet() ? "Die Google-Anmeldung ist abgelaufen." : "Verbinde deinen Google Kalender, dann siehst du hier auch eure Termine." }),
-        el("button", { class: "knopf", text: G.warAngemeldet() ? "Neu anmelden" : "Mit Google anmelden", onclick: anmelden })
+        el("button", { class: "knopf", text: G.warAngemeldet() ? "Neu anmelden" : "Mit Google anmelden", onclick: anmelden }),
+        el("a", { href: "skript.html", text: "Lieber dauerhaft verbinden" })
       ]));
     } else if (googleFehler) {
       box.appendChild(el("p", { class: "warn", text: googleFehler.message }));
@@ -208,13 +209,19 @@
     var konto = $("#konto");
     konto.innerHTML = "";
     if (!G.eingerichtet()) { box.appendChild(el("p", { class: "leise", text: "Noch nicht eingerichtet." })); return; }
-    if (!G.angemeldet()) {
+    var dauerhaft = el("p", { class: "leise" }, [el("a", { href: "skript.html", text: "Dauerhaft verbinden" }), ", dann muss sich niemand mehr jede Stunde neu anmelden."]);
+    if (G.skript()) {
+      konto.appendChild(el("p", { class: "leise" }, ["Dauerhaft verbunden über euer Kalender-Skript, für alle Handys. ", el("a", { href: "skript.html", text: "Ändern" })]));
+    } else if (!G.angemeldet()) {
       konto.appendChild(el("button", { class: "knopf", text: "Mit Google anmelden", onclick: anmelden }));
+      konto.appendChild(dauerhaft);
       return;
+    } else {
+      konto.appendChild(el("button", { class: "knopf zweit", text: "Von Google abmelden", onclick: function () {
+        G.abmelden(); googleTermine = []; localStorage.removeItem(CACHE_KEY); einstellungenZeichnen(); zeichnen();
+      } }));
+      konto.appendChild(dauerhaft);
     }
-    konto.appendChild(el("button", { class: "knopf zweit", text: "Von Google abmelden", onclick: function () {
-      G.abmelden(); googleTermine = []; localStorage.removeItem(CACHE_KEY); einstellungenZeichnen(); zeichnen();
-    } }));
     var auswahl = G.auswahl();
     var abfall = $("#abfall");
     abfall.innerHTML = "";

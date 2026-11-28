@@ -19,6 +19,43 @@
   var AUSWAHL_KEY = "familie.kalender.geraet.auswahl";   // { kalenderId: true }
   var ABFALL_KEY = "familie.kalender.geraet.abfall";     // kalenderId oder ""
   var LISTE_KEY = "familie.kalender.geraet.liste";       // zuletzt geladene Kalenderliste
+  // Kalender-Skript (Google Apps Script in Matthias' Konto, siehe kalender/skript.html):
+  // { url, schluessel }. Synchronisiert, damit alle Handys ohne eigene Anmeldung die Termine sehen.
+  var SKRIPT_KEY = "familie.kalender.skript";
+
+  function skript() {
+    var s = Familie.laden(SKRIPT_KEY, null);
+    return s && s.url && s.schluessel ? s : null;
+  }
+
+  function skriptAbruf(parameter, s) {
+    s = s || skript();
+    var url = s.url + "?" + new URLSearchParams(Object.assign({ schluessel: s.schluessel }, parameter)).toString();
+    return fetch(url).then(function (r) {
+      if (!r.ok) throw new Error("Das Kalender-Skript antwortet mit Fehler " + r.status + ".");
+      return r.json();
+    }, function () {
+      throw new Error("Das Kalender-Skript ist gerade nicht erreichbar.");
+    }).then(function (d) {
+      if (d && d.fehler) throw new Error("Kalender-Skript: " + d.fehler);
+      return d;
+    });
+  }
+
+  /* Prüft die Adresse und speichert sie für alle Handys. */
+  function skriptSetzen(url, schluessel) {
+    url = String(url || "").trim();
+    if (!/^https:\/\/script\.google\.com\/macros\/s\/[^/]+\/exec$/.test(url)) {
+      return Promise.reject(new Error("Das sieht nicht wie eine Web-App-Adresse aus. Sie beginnt mit https://script.google.com/macros/s/ und endet auf /exec."));
+    }
+    var s = { url: url, schluessel: schluessel };
+    return skriptAbruf({ aktion: "kalender" }, s).then(function (d) {
+      Familie.speichern(SKRIPT_KEY, s);
+      return listeUebernehmen(d.kalender || []);
+    });
+  }
+
+  function skriptTrennen() { Familie.speichern(SKRIPT_KEY, null); localStorage.removeItem(LISTE_KEY); }
 
   function eingerichtet() { return !!CLIENT_ID; }
 
@@ -40,7 +77,7 @@
     return t && t.ablauf > Date.now() + 60000 ? t.token : null;
   }
 
-  function angemeldet() { return !!token(); }
+  function angemeldet() { return !!skript() || !!token(); }
   function warAngemeldet() { return !!Familie.laden(TOKEN_KEY, null); }
 
   /* Muss aus einem Klick heraus aufgerufen werden (Popup). */
@@ -86,23 +123,27 @@
 
   /* Liste der Kalender. Beim ersten Mal sind alle ausgewählt, der Abfallkalender wird erraten. */
   function kalenderLaden() {
+    if (skript()) return skriptAbruf({ aktion: "kalender" }).then(function (d) { return listeUebernehmen(d.kalender || []); });
     return api("/users/me/calendarList", { maxResults: 250 }).then(function (d) {
-      var liste = (d.items || []).map(function (k) {
+      return listeUebernehmen((d.items || []).map(function (k) {
         return { id: k.id, name: k.summaryOverride || k.summary, farbe: k.backgroundColor || "#888", primaer: !!k.primary };
-      });
-      Familie.speichern(LISTE_KEY, liste);
-      var auswahl = Familie.laden(AUSWAHL_KEY, null);
-      if (!auswahl) {
-        auswahl = {};
-        liste.forEach(function (k) { auswahl[k.id] = true; });
-        Familie.speichern(AUSWAHL_KEY, auswahl);
-      }
-      if (Familie.laden(ABFALL_KEY, null) === null) {
-        var abfall = liste.find(function (k) { return /abfall|müll|muell/i.test(k.name); });
-        Familie.speichern(ABFALL_KEY, abfall ? abfall.id : "");
-      }
-      return liste;
+      }));
     });
+  }
+
+  function listeUebernehmen(liste) {
+    Familie.speichern(LISTE_KEY, liste);
+    var auswahl = Familie.laden(AUSWAHL_KEY, null);
+    if (!auswahl) {
+      auswahl = {};
+      liste.forEach(function (k) { auswahl[k.id] = true; });
+      Familie.speichern(AUSWAHL_KEY, auswahl);
+    }
+    if (Familie.laden(ABFALL_KEY, null) === null) {
+      var abfall = liste.find(function (k) { return /abfall|müll|muell/i.test(k.name); });
+      Familie.speichern(ABFALL_KEY, abfall ? abfall.id : "");
+    }
+    return liste;
   }
 
   function kalenderListe() { return Familie.laden(LISTE_KEY, []); }
@@ -149,6 +190,14 @@
     var kals = kalenderListe().filter(function (k) { return nurKalender ? nurKalender.indexOf(k.id) >= 0 : gewaehlt[k.id]; });
     var timeMin = Familie.ausIso(vonIso).toISOString();
     var timeMax = Familie.ausIso(plusTage(bisIso, 1)).toISOString();
+    if (skript()) {
+      return skriptAbruf({ von: timeMin, bis: timeMax, kalender: kals.map(function (k) { return k.id; }).join(",") }).then(function (d) {
+        var alle = d.termine || {};
+        return kals.reduce(function (acc, k) {
+          return (alle[k.id] || []).reduce(function (a, ev) { return a.concat(eintraege(ev, k, vonIso, bisIso)); }, acc);
+        }, []);
+      });
+    }
     return Promise.all(kals.map(function (k) {
       return api("/calendars/" + encodeURIComponent(k.id) + "/events", {
         timeMin: timeMin, timeMax: timeMax, singleEvents: "true", orderBy: "startTime", maxResults: 250
@@ -161,6 +210,9 @@
 
   window.GoogleKalender = {
     eingerichtet: eingerichtet,
+    skript: skript,
+    skriptSetzen: skriptSetzen,
+    skriptTrennen: skriptTrennen,
     angemeldet: angemeldet,
     warAngemeldet: warAngemeldet,
     anmelden: anmelden,

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#2f6f62">
+  <title>Kalender dauerhaft verbinden</title>
+  <link rel="icon" href="../gemeinsam/logo.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../gemeinsam/icons/apple-touch-icon.png">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <meta name="apple-mobile-web-app-title" content="Familie">
+  <link rel="stylesheet" href="../gemeinsam/style.css">
+  <link rel="stylesheet" href="kalender.css">
+  <style>
+    ol.schritte { padding-left: 1.3rem; margin: 0; }
+    ol.schritte li { margin: 0 0 0.9rem; }
+    pre.code { max-height: 9rem; overflow: auto; font-size: 0.72rem; background: var(--hg); border: 1px solid var(--rand); border-radius: 8px; padding: 0.5rem; white-space: pre; }
+    .fertig-box { border-left: 4px solid var(--ok); }
+    .reihe { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem; }
+  </style>
+</head>
+<body>
+  <header class="kopf">
+    <a href="./" aria-label="Zurück zur Woche">‹</a>
+    <h1>Kalender dauerhaft verbinden</h1>
+  </header>
+
+  <main class="inhalt">
+    <section id="verbunden" class="karte fertig-box" hidden>
+      <strong>Verbunden ✓</strong>
+      <p class="leise">Alle Handys der Familie sehen eure Google-Termine, ohne sich anzumelden.</p>
+      <div class="reihe">
+        <a class="knopf" href="../">Zur Startseite</a>
+        <button class="knopf zweit" id="trennen">Verbindung trennen</button>
+      </div>
+    </section>
+
+    <section id="anleitung">
+      <p class="karte">Google lässt eine Web-App nur eine Stunde lang in den Kalender schauen. Mit einem kleinen Skript in deinem Google-Konto entfällt das: Du richtest es einmal ein, danach sehen alle Handys eure Termine ohne Anmeldung. Das Skript kann nur lesen und antwortet nur mit dem geheimen Schlüssel unten. Am besten am Computer einrichten.</p>
+
+      <ol class="schritte karte">
+        <li><strong>Code kopieren.</strong> Er enthält schon euren geheimen Schlüssel.
+          <pre class="code" id="code"></pre>
+          <button class="knopf klein" id="kopieren">Code kopieren</button>
+        </li>
+        <li><a href="https://script.google.com/home/projects/create" target="_blank" rel="noopener"><strong>script.google.com</strong> öffnen</a> (mit deinem Google-Konto, in dem alle Familienkalender zu sehen sind). Es öffnet sich ein neues Projekt. Den vorhandenen Text löschen, den Code einfügen und oben auf 💾 <em>Speichern</em> tippen. Als Namen z. B. „Familie Kalender“.</li>
+        <li>Oben rechts <strong>Bereitstellen → Neue Bereitstellung</strong>. Beim Zahnrad „Typ auswählen“ <strong>Web-App</strong> wählen. <em>Ausführen als:</em> Ich. <em>Zugriff:</em> <strong>Jeder</strong>. Dann <strong>Bereitstellen</strong>.</li>
+        <li>Google fragt nach dem Zugriff auf deinen Kalender: <em>Zugriff autorisieren</em>, dein Konto wählen. Kommt „Google hat diese App nicht überprüft“, auf <em>Erweitert</em> und <em>Zu Familie Kalender wechseln</em> tippen und erlauben. Das ist dein eigenes Skript.</li>
+        <li>Die <strong>Web-App-URL</strong> kopieren (endet auf <code>/exec</code>) und hier einfügen:
+          <input id="url" type="url" inputmode="url" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off">
+          <div class="reihe"><button class="knopf" id="verbinden">Verbinden</button></div>
+          <p id="meldung" class="leise" role="status"></p>
+        </li>
+      </ol>
+    </section>
+  </main>
+
+  <script src="../gemeinsam/familie.js"></script>
+  <script src="../gemeinsam/sync-firebase.js"></script>
+  <script src="../gemeinsam/sync.js"></script>
+  <script src="google.js"></script>
+  <script>
+    (function () {
+      "use strict";
+      var G = window.GoogleKalender;
+      var NEU_KEY = "familie.kalender.geraet.neuerSchluessel";
+      var $ = function (s) { return document.querySelector(s); };
+
+      function neuerSchluessel() {
+        var b = new Uint8Array(16);
+        crypto.getRandomValues(b);
+        return Array.prototype.map.call(b, function (x) { return ("0" + x.toString(16)).slice(-2); }).join("");
+      }
+
+      var schluessel = Familie.laden(NEU_KEY, null) || neuerSchluessel();
+      Familie.speichern(NEU_KEY, schluessel);
+
+      var CODE = [
+        "// Familie Bieler: stellt eure Google-Kalender für die Familien-App bereit. Nur lesen.",
+        "// Antwortet nur, wenn der geheime Schlüssel stimmt.",
+        "const SCHLUESSEL = '" + schluessel + "';",
+        "",
+        "function doGet(e) {",
+        "  const p = (e && e.parameter) || {};",
+        "  if (p.schluessel !== SCHLUESSEL) return antwort({ fehler: 'Falscher Schlüssel.' });",
+        "  const kalender = CalendarApp.getAllCalendars().filter(k => !k.isHidden());",
+        "  if (p.aktion === 'kalender') {",
+        "    return antwort({ kalender: kalender.map(k => ({",
+        "      id: k.getId(), name: k.getName(), farbe: k.getColor(), primaer: k.isMyPrimaryCalendar()",
+        "    })) });",
+        "  }",
+        "  const von = new Date(p.von), bis = new Date(p.bis);",
+        "  if (isNaN(von) || isNaN(bis) || bis - von > 62 * 864e5) return antwort({ fehler: 'Ungültiger Zeitraum.' });",
+        "  const nur = p.kalender ? p.kalender.split(',') : null;",
+        "  const zone = Session.getScriptTimeZone();",
+        "  const tag = d => Utilities.formatDate(d, zone, 'yyyy-MM-dd');",
+        "  const termine = {};",
+        "  kalender.forEach(k => {",
+        "    if (nur && nur.indexOf(k.getId()) < 0) return;",
+        "    termine[k.getId()] = k.getEvents(von, bis).map(ev => ev.isAllDayEvent()",
+        "      ? { id: ev.getId(), summary: ev.getTitle(), location: ev.getLocation(),",
+        "          start: { date: tag(ev.getAllDayStartDate()) }, end: { date: tag(ev.getAllDayEndDate()) } }",
+        "      : { id: ev.getId(), summary: ev.getTitle(), location: ev.getLocation(),",
+        "          start: { dateTime: ev.getStartTime().toISOString() }, end: { dateTime: ev.getEndTime().toISOString() } });",
+        "  });",
+        "  return antwort({ termine: termine });",
+        "}",
+        "",
+        "function antwort(obj) {",
+        "  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);",
+        "}",
+        ""
+      ].join("\n");
+
+      $("#code").textContent = CODE;
+      $("#kopieren").addEventListener("click", function () {
+        var fertig = function () { $("#kopieren").textContent = "Kopiert ✓"; };
+        if (navigator.clipboard) navigator.clipboard.writeText(CODE).then(fertig, function () { auswaehlen(); });
+        else auswaehlen();
+      });
+      function auswaehlen() {
+        var r = document.createRange(); r.selectNodeContents($("#code"));
+        var s = getSelection(); s.removeAllRanges(); s.addRange(r);
+        $("#kopieren").textContent = "Markiert, jetzt kopieren";
+      }
+
+      $("#verbinden").addEventListener("click", function () {
+        var m = $("#meldung");
+        m.className = "leise"; m.textContent = "Prüfe …";
+        G.skriptSetzen($("#url").value, schluessel).then(function (liste) {
+          localStorage.removeItem(NEU_KEY);
+          m.textContent = liste.length + " Kalender gefunden.";
+          zeigen();
+        }).catch(function (e) { m.className = "warn"; m.textContent = e.message; });
+      });
+
+      $("#trennen").addEventListener("click", function () {
+        var alt = G.skript();
+        if (alt) { schluessel = alt.schluessel; Familie.speichern(NEU_KEY, schluessel); $("#url").value = alt.url; }
+        G.skriptTrennen();
+        zeigen();
+      });
+
+      function zeigen() {
+        var an = !!G.skript();
+        $("#verbunden").hidden = !an;
+        $("#anleitung").hidden = an;
+      }
+      window.addEventListener("familie:aktualisiert", zeigen);
+      zeigen();
+    })();
+  </script>
+</body>
+</html>
